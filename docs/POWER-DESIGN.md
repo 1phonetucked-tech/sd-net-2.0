@@ -68,22 +68,62 @@ in `RESUME_NOTES.md`, which treated all three as equivalent supply rails:
 Nothing external drives VDD or VDDA. Nothing ties them to 5 V. Nothing ties any of them to
 PMOS.
 
-## Open questions to resolve before routing
+## VDD/VDDA: resolved — do not tie them together
 
-1. **Are VDD and VDDA the same internal node?** The datasheet doesn't say. They're described
-   as separate 3.3 V "sources" (digital vs USB PHY) fed by one band-gap regulator, so they
-   are plausibly the same tap brought out twice for clean PHY decoupling. Common practice in
-   that case is to decouple each separately and optionally link them through a ferrite bead.
-   **Do not tie them with a plain wire until this is settled** — that's a variant of the
-   rev 1.5 mistake.
-2. **Cap values.** 100 nF per power pin and 10 µF bulk on VBUS is conventional and safe.
-   Nothing in the datasheet mandates values, so we're free to keep the existing parts.
-3. **Card power budget.** PMOS is rated **200 mA**. Modern high-speed SD cards can exceed
+**Decision: decouple VDD and VDDA separately to GND, each close to its own pin, and run no
+external connection between them.**
+
+This holds regardless of whether they're internally the same node, so the question doesn't
+need to be answered before routing:
+
+- **If internally common** (one band-gap tap brought out twice for clean PHY decoupling —
+  the likelier case), an external link is *redundant*. Omitting it costs nothing.
+- **If internally separate** (independently filtered digital and PHY taps), an external link
+  *defeats* that on-chip isolation, dumping 8051 and card-interface switching noise straight
+  into the USB 2.0 PHY rail. That's the same class of error as rev 1.5.
+
+Not tying them is safe under both readings. Tying them is only safe under one. So don't.
+
+There is also nothing to debate about *sourcing* them: this board has no external 3.3 V
+supply and the chip's only rated input is 5 V, so VDD and VDDA are internally generated
+either way.
+
+### Second-source search — what was actually checked (2026-07-31)
+
+No verified second-source schematic was obtained. Every accessible route was blocked:
+
+| Source | Result |
+|---|---|
+| [OSHWLab GL823K-Cardreader](https://oshwlab.com/oshwlab/GL823K-Cardreader) | Schematic only renders inside the EasyEDA editor. The two PDFs attached to the project turned out to be the same Rev 1.05 datasheet we already have, and a JLC ISO-27001 certificate. |
+| EasyEDA document API | 403 (CloudFront). |
+| [EEWorld TF card reader ref design](https://en.eeworld.com.cn/Reference_Designs/detail/59148) | Page returns no content to a fetcher. |
+| [Scribd SD-WFI-V2-0](https://www.scribd.com/document/813586126/SD-WFI-V2-0) | Paywalled. |
+| [PCBWay OTG card reader + HUB](https://www.pcbway.com/project/shareproject/Mobile_phone_OTG_card_reader___HUB.html) | Page returns no content to a fetcher. |
+
+⚠️ Search-engine summaries claimed a GL823K schematic with "C1 4.7 µF, C2 0.1 µF, C3 4.7 µF,
+C4 2.2 µF" and "USB5V through an **AP2112-3.3V** regulator". **Treat that as unverified.**
+Those summaries describe pages that could not be read directly, and the AP2112 detail almost
+certainly belongs to the *SD-WiFi* board in that same result set — a design that pairs a
+GL823K with a WiFi module, where the LDO powers the radio, not the card-reader chip. Do not
+let it talk you into feeding VDD/VDDA from an external 3.3 V rail. Nothing in the datasheet
+supports that, and it would fight the on-chip regulator.
+
+### A definitive bench test, if you want certainty
+
+Take a **loose, unsoldered GL823K** and measure resistance / diode drop between **pin 9 and
+pin 13**. Near-zero ohms means one internal node; anything else means they're separate. This
+cannot be done on a rev 1.5 board — the PCB shorts those pins together, which is the bug.
+
+It's a nice-to-know, not a blocker: the recommended layout above is correct either way.
+
+## Remaining notes
+
+1. **Cap values.** 100 nF per power pin plus 10 µF bulk on VBUS is conventional and safe.
+   Nothing in the datasheet mandates values, so the existing parts are fine.
+2. **Card power budget.** PMOS is rated **200 mA**. Modern high-speed SD cards can exceed
    that transiently — the 10 µF at the socket matters for exactly this reason.
-4. **R1 / LED1.** Pin 12 is an output that drives the access LED. Feed the anode through R1
+3. **R1 / LED1.** Pin 12 is an output that drives the access LED. Feed the anode through R1
    from **VDD**, cathode to pin 12. Do not feed it from `VCARD`.
-
-Since there's no vendor reference schematic, the best available cross-check is a
-**second-source GL823K product schematic** — several exist publicly for commercial readers
-using this exact chip. Worth pulling one before the rev 2.0 layout is finalized, purely to
-confirm the VDD/VDDA question.
+4. **Placement.** Rev 1.5 put the 100 nF caps on one side of U1 and the 10 µF on the other,
+   which made sense when they all shared one net. Now each cap belongs beside the specific
+   pin it serves — VDDA's especially, since that's the USB PHY rail.
