@@ -76,6 +76,43 @@ That makes a from-scratch KiCad build the sensible route: 11 components and 13 n
 every connection known precisely, and the layout has to change anyway so each decoupling cap
 sits at the pin of the rail it now serves.
 
+## Status
+
+- ✅ **Schematic built and verified.** `hardware/sd-net.kicad_sch` — ERC clean (0 errors),
+  netlist verified against intent and diffed against rev 1.5 by `tools/verify_netlist.py`.
+- ⬜ **Footprints.** `SD-006M` and `USB-AM90` need project-local footprints, derivable from
+  the pad geometry in the Altium ASCII export. Until they exist, ERC reports 2 warnings about
+  the missing `sd-net` footprint library.
+- ⬜ **PCB layout.**
+
+### How the schematic was built
+
+`tools/gen_schematic.py` generates it from the recovered netlist. Generating rather than
+drawing means the four power nodes are separate **because they are declared separate**, not
+because someone remembered to cut a wire. The pin types encode the datasheet finding too:
+`VDD`, `VDDA` and `PMOS` are `power_out`, `5V` is the only `power_in`.
+
+Deliberately floating pins (`U1.11` GPIO, `CARD1.CD`, `CARD1.WP`) carry explicit no-connect
+markers, so rev 2.0 can tell "we decided this" from "we forgot this" — a distinction rev 1.5
+did not record.
+
+The generator is a **one-time bootstrap**. Once you start editing in KiCad, don't re-run it.
+
+### Two format traps, for anyone doing this again
+
+Both produce nothing but `Failed to load schematic`, with no line number:
+
+1. A symbol in a `.kicad_sym` library is **not** in the same dialect as the same symbol
+   embedded in a `.kicad_sch` `lib_symbols` cache. The library form carries `show_name`,
+   `do_not_autoplace`, `in_pos_files`, `duplicate_pin_numbers_are_jumpers`, and puts
+   `(hide yes)` as a *sibling* of `(effects)`. The schematic form drops those and nests
+   `(hide yes)` *inside* `(effects)`.
+2. Only the **outer** symbol takes the `Lib:Name` form. Child unit symbols keep their bare
+   `Name_0_1` / `Name_1_1` names. Qualifying them breaks the file.
+
+Also note the `.kicad_sch` and `.kicad_sym` format version numbers are unrelated — this
+project writes `20250114` for schematics and `20251024` for symbol libraries.
+
 ## Step 2 (superseded) — import into KiCad
 
 1. `File → Import Non-KiCad Project → Altium Project`, or import `.PcbDoc` / `.SchDoc`
