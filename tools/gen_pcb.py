@@ -100,40 +100,66 @@ def edge_cuts():
 # --- placement --------------------------------------------------------------
 # Held from rev 1.5 (docs/REV1.5-BASELINE.md) because they are mechanical fits.
 FIXED = {
-    "USB1": (67.818, 25.146, 0),
-    "CARD1": (68.199, 54.610, 180),
-    "U1": (68.326, 34.290, 180),
+    "USB1": (68.250, 25.146, 0),      # centred on the board axis
+    "CARD1": (67.999, 59.099, 180),   # raised from rev 1.5 by hand
+    "U1": (68.285, 38.000, 270),
 }
 
-# U1 is SSOP-16, placed at 180 degrees, which MIRRORS which side each pin
-# lands on -- easy to get backwards. Verified against the generated board:
+# U1 sits at 270 degrees so its pin rows run HORIZONTALLY rather than as
+# vertical columns:  pins 1-8 (almost all SD) face CARD1 above, pins 9-16 (USB
+# and power) face USB1 below.
 #
-#   pin 9  VDD   -> (85.701, 83.487)   |  pin 8 PMOS/VCARD -> (90.951, 83.487)
-#   pin 10 +5V   -> (85.701, 84.122)   |
-#   pin 13 VDDA  -> (85.701, 86.027)   |  CARD1 pin 4 VDD  -> (88.920, 76.365)
+# That orientation is what makes the board route. Six of the seven signals leave
+# the socket in the same left-to-right order they arrive at U1, so straight
+# diagonals between them cannot cross. Only VCARD is out of order.
 #
-# So the three supply rails all exit U1's LEFT side and VCARD exits the RIGHT,
-# toward the socket. Coordinates below are in the Gerber frame (see g2k).
+#   top row    y 79.375:  8 VCARD | 7 D2 | 6 D3 | 5 CMD | 4 CLK | 3 D0 | 2 D1 | 1 GND
+#   bottom row y 84.625:  9 VDD | 10 +5V | 11 GPIO | 12 LED | 13 VDDA | 14 GND | 15 DP | 16 DM
 #
-# HF caps go in the inner column nearest the pins; bulk sits one column out.
+# x is chosen so U1's signal span centres on CARD1's (88.285 in KiCad frame).
+#
+# Note KiCad's rotation matrix is [[cos,sin],[-sin,cos]] -- opposite handedness
+# to the standard form. At 0 and 180 the sine term vanishes, so a wrong
+# transform still validates; 90 and 270 are where it bites.
 PLACE = {
-    # +5V / VDD / VDDA -- inner column of 100 nF, outer column of bulk,
-    # both to the left of U1 where those pins actually are.
-    "C5": (62.5, 38.0, 0),   # VDD  100nF, nearest pin 9
-    "C4": (62.5, 35.6, 0),   # +5V  100nF, nearest pin 10
-    "C6": (62.5, 33.2, 0),   # VDDA 100nF, nearest pin 13 -- the PHY rail
-    "C2": (59.0, 38.0, 0),   # VDD  10uF
-    "C1": (59.0, 35.6, 0),   # +5V  10uF
-    "C8": (59.0, 33.2, 0),   # VDDA 100nF, second
-    # VCARD -- in the corridor between U1 pin 8 and the socket's VDD contact
-    "C7": (73.5, 41.0, 0),   # 100nF, nearest CARD1
-    "C3": (73.5, 38.8, 0),   # 10uF bulk for card inrush
-    # LED chain, out toward the lower left as in rev 1.5
-    "R1": (37.719, 25.400, 0),
-    "LED1": (17.653, 25.273, 0),
+    # HF decoupling under U1's bottom row, pad 1 upward at 270, clear of its
+    # courtyard (which reaches y 85.7 in KiCad frame)
+    "C5": (65.2, 32.4, 270),   # VDD  -> pin 9
+    "C4": (67.0, 32.4, 270),   # +5V  -> pin 10
+    "C6": (68.8, 32.4, 270),   # VDDA -> pin 13, the USB PHY rail
+    # bulk one row further out
+    "C2": (63.4, 29.2, 270),
+    "C1": (66.1, 29.2, 270),
+    "C8": (68.8, 29.2, 270),
+    # VCARD pair, out to the right clear of CARD1's courtyard
+    "C7": (80.0, 43.5, 270),
+    "C3": (80.0, 39.5, 270),
+    # LED chain along the base
+    "R1": (36.675, 26.0, 0),
+    "LED1": (16.712, 26.0, 0),
 }
 PLACE.update(FIXED)
 
+
+
+STACKUP = """\t\t(stackup
+\t\t\t(layer "F.SilkS" (type "Top Silk Screen"))
+\t\t\t(layer "F.Paste" (type "Top Solder Paste"))
+\t\t\t(layer "F.Mask" (type "Top Solder Mask") (thickness 0.01))
+\t\t\t(layer "F.Cu" (type "copper") (thickness 0.035))
+\t\t\t(layer "dielectric 1" (type "prepreg") (thickness 0.1855) (material "FR4") (epsilon_r 4.74) (loss_tangent 0.02))
+\t\t\t(layer "In1.Cu" (type "copper") (thickness 0.035))
+\t\t\t(layer "dielectric 2" (type "core") (thickness 1.03) (material "FR4") (epsilon_r 4.6) (loss_tangent 0.02))
+\t\t\t(layer "In2.Cu" (type "copper") (thickness 0.035))
+\t\t\t(layer "dielectric 3" (type "prepreg") (thickness 0.1855) (material "FR4") (epsilon_r 4.74) (loss_tangent 0.02))
+\t\t\t(layer "B.Cu" (type "copper") (thickness 0.035))
+\t\t\t(layer "B.Mask" (type "Bottom Solder Mask") (thickness 0.01))
+\t\t\t(layer "B.Paste" (type "Bottom Solder Paste"))
+\t\t\t(layer "B.SilkS" (type "Bottom Silk Screen"))
+\t\t\t(copper_finish "ENIG")
+\t\t\t(dielectric_constraints no)
+\t\t)
+"""
 
 def load_footprint(lib_id):
     lib, name = lib_id.split(":", 1)
@@ -155,6 +181,15 @@ def place(ref, lib_id, value, x, y, rot, netmap, netnames):
     body = re.sub(r'\t\(embedded_fonts \w+\)\n', '', body)
     body = re.sub(r'\t\(layer "F\.Cu"\)\n', '', body, count=1)
     body = body.replace('"REF**"', f'"{ref}"')
+    # KiCad stores pad angles ABSOLUTELY, with the footprint's rotation baked
+    # in. Rotating a footprint without also stamping the angle onto every pad
+    # moves the pad positions but leaves the pad shapes unrotated -- which at 90
+    # or 270 degrees lays 1.65 mm pads across a 0.635 mm pitch and shorts the
+    # part to itself. Invisible at 0/180, where a rectangle maps onto itself.
+    if rot:
+        body = re.sub(r'(\(pad "[^"]*"[^\n]*\n\s*)\(at ([-\d.]+) ([-\d.]+)\)',
+                      lambda m: f'{m.group(1)}(at {m.group(2)} {m.group(3)} {rot:g})',
+                      body)
     # A .kicad_mod's Value field holds the *footprint* name. On the board it has
     # to hold the component value, or every part is labelled C_0805_2012Metric
     # and the fab BOM is meaningless.
@@ -242,7 +277,8 @@ def main():
            f'\t\t(48 "B.Fab" user)\n'
            f'\t\t(49 "F.Fab" user)\n'
            f'\t)\n'
-           f'\t(setup\n\t\t(pad_to_mask_clearance 0)\n\t\t(allow_soldermask_bridges_in_footprints no)\n\t)\n'
+           f'\t(setup\n\t\t(pad_to_mask_clearance 0)\n'
+           f'\t\t(allow_soldermask_bridges_in_footprints no)\n' + STACKUP + '\t)\n'
            + nets
            + fps
            + edge_cuts()
