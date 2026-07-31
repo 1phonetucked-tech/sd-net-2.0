@@ -25,7 +25,7 @@ HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HW = os.path.join(HERE, "hardware")
 
 VERSION = 20251024      # .kicad_sym format
-SCH_VERSION = 20250114  # .kicad_sch format -- different numbering from the lib
+SCH_VERSION = 20260306  # .kicad_sch format -- different numbering from the lib
 GEN_VER = "10.0"
 
 
@@ -335,8 +335,26 @@ LCSC = {
 }
 
 
+# Where the reference/value text sits relative to the symbol origin. The big
+# custom symbols have clear space above them; the two-pin Device symbols do not
+# -- their pins carry net labels directly above and below, so their text goes to
+# the right instead. Getting this wrong drops R1's and LED1's designators on top
+# of the capacitor row.
+LABEL_POS = {
+    "sd-net:GL823K":   (0, -20.32, "center"),
+    "sd-net:SD-006M":  (0, -21.59, "center"),
+    "sd-net:USB-AM90": (0, -12.70, "center"),
+    "Device:C":        (3.81, -1.27, "left"),
+    "Device:R":        (3.81, -1.27, "left"),
+    "Device:LED":      (3.81, -1.27, "left"),
+    "power:PWR_FLAG":  (3.81, -1.27, "left"),
+}
+
+
 def sym_instance(ref, lib_id, value, footprint, x, y, uid_):
     lcsc = LCSC.get(ref, "")
+    dx, dy, just = LABEL_POS.get(lib_id, (0, -20.32, "center"))
+    j = "" if just == "center" else f" (justify {just})"
     return f"""\t(symbol
 \t\t(lib_id "{lib_id}")
 \t\t(at {x} {y} 0)
@@ -348,12 +366,12 @@ def sym_instance(ref, lib_id, value, footprint, x, y, uid_):
 \t\t(fields_autoplaced yes)
 \t\t(uuid "{uid_}")
 \t\t(property "Reference" "{ref}"
-\t\t\t(at {x} {y - 22.86} 0)
-\t\t\t(effects (font (size 1.27 1.27)))
+\t\t\t(at {x + dx} {y + dy} 0)
+\t\t\t(effects (font (size 1.27 1.27)){j})
 \t\t)
 \t\t(property "Value" "{value}"
-\t\t\t(at {x} {y - 20.32} 0)
-\t\t\t(effects (font (size 1.27 1.27)))
+\t\t\t(at {x + dx} {y + dy + 2.54} 0)
+\t\t\t(effects (font (size 1.27 1.27)){j})
 \t\t)
 \t\t(property "Footprint" "{footprint}"
 \t\t\t(at {x} {y} 0)
