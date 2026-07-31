@@ -29,6 +29,18 @@
 		(fill no)
 		(layer "F.Fab")
 	)
+	(pad "" np_thru_hole circle
+		(at 2.25 1.175)
+		(size 1.0 1.0)
+		(drill 1.0)
+		(layers "F&B.Cu" "*.Mask")
+	)
+	(pad "" np_thru_hole circle
+		(at -2.25 1.175)
+		(size 1.0 1.0)
+		(drill 1.0)
+		(layers "F&B.Cu" "*.Mask")
+	)
 	(pad "1" thru_hole circle
 		(at 3.5001 -1.0008)
 		(size 1.6002 1.6002)
@@ -64,18 +76,6 @@
 		(size 3.4011 3.4011)
 		(drill 2.601)
 		(layers "*.Cu" "*.Mask")
-	)
-	(pad "" np_thru_hole circle
-		(at 2.25 1.175)
-		(size 1.0 1.0)
-		(drill 1.0)
-		(layers "F&B.Cu" "*.Mask")
-	)
-	(pad "" np_thru_hole circle
-		(at -2.25 1.175)
-		(size 1.0 1.0)
-		(drill 1.0)
-		(layers "F&B.Cu" "*.Mask")
 	)
 	(embedded_fonts no)
 )
