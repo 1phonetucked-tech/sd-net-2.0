@@ -104,14 +104,24 @@ STITCH = [
 # (DP above DM), while at USB1 they sit side by side 2.0 mm apart with DP to the
 # LEFT of DM. Running DM on the outside of the turn gets them there without a
 # crossing, and lands the lengths within 0.7 mm of each other.
-DIFF_WIDTH = 0.2
+# Geometry solved for PCBWay's standard 4-layer 1.6 mm stackup: F.Cu sits over
+# 7628 prepreg, 0.1855 mm after lamination, Dk 4.74. By IPC-2141 microstrip that
+# gives Z0 48.9 ohm at 0.30 mm width, and 0.346 mm edge-to-edge spacing lands
+# Zdiff on 90.0 ohm.
+#
+# The first cut used 0.20 mm traces at 0.25 mm spacing, which computes to
+# 105.9 ohm -- far off 90 and the kind of error that only shows up as marginal
+# enumeration on a finished board.
+#
+# The pair threads the 1.475 mm corridor between C6's pad (right edge 83.450)
+# and U1's pads (left edge 84.925). At 0.946 mm total width that leaves 0.265 mm
+# either side, clear of the 0.2 mm rule but with nothing to spare -- do not
+# widen further without moving C6.
+DIFF_WIDTH = 0.30
 
-# Pitch is 0.45 mm (0.25 mm gap between 0.2 mm traces) so the pair clears the
-# board's 0.2 mm default rule without needing a custom net class. The turns sit
-# well clear of USB1 pin 4, whose ground pad needs room for its thermal spokes.
-USB_DP_PATH = [(85.75, 85.81), (84.00, 85.81), (84.00, 91.30),
+USB_DP_PATH = [(85.75, 85.81), (83.865, 85.81), (83.865, 91.30),
                (87.25, 91.30), (87.25, 93.85)]
-USB_DM_PATH = [(85.75, 86.44), (84.45, 86.44), (84.45, 90.70),
+USB_DM_PATH = [(85.75, 86.44), (84.510, 86.44), (84.510, 90.70),
                (89.25, 90.70), (89.25, 93.85)]
 
 
@@ -129,6 +139,37 @@ def build():
     out += path(USB_DP_PATH, "USB_DP", "F.Cu", DIFF_WIDTH)
     out += path(USB_DM_PATH, "USB_DM", "F.Cu", DIFF_WIDTH)
     return out
+
+
+# PCBWay standard 4-layer, 1.6 mm finished. Recorded on the board so KiCad's
+# impedance tooling and any future recalculation use the real numbers rather
+# than KiCad's generic defaults.
+STACKUP = """\t\t(stackup
+\t\t\t(layer "F.SilkS" (type "Top Silk Screen"))
+\t\t\t(layer "F.Paste" (type "Top Solder Paste"))
+\t\t\t(layer "F.Mask" (type "Top Solder Mask") (thickness 0.01))
+\t\t\t(layer "F.Cu" (type "copper") (thickness 0.035))
+\t\t\t(layer "dielectric 1" (type "prepreg") (thickness 0.1855) (material "FR4") (epsilon_r 4.74) (loss_tangent 0.02))
+\t\t\t(layer "In1.Cu" (type "copper") (thickness 0.035))
+\t\t\t(layer "dielectric 2" (type "core") (thickness 1.03) (material "FR4") (epsilon_r 4.6) (loss_tangent 0.02))
+\t\t\t(layer "In2.Cu" (type "copper") (thickness 0.035))
+\t\t\t(layer "dielectric 3" (type "prepreg") (thickness 0.1855) (material "FR4") (epsilon_r 4.74) (loss_tangent 0.02))
+\t\t\t(layer "B.Cu" (type "copper") (thickness 0.035))
+\t\t\t(layer "B.Mask" (type "Bottom Solder Mask") (thickness 0.01))
+\t\t\t(layer "B.Paste" (type "Bottom Solder Paste"))
+\t\t\t(layer "B.SilkS" (type "Bottom Silk Screen"))
+\t\t\t(copper_finish "ENIG")
+\t\t\t(dielectric_constraints no)
+\t\t)
+"""
+
+
+def ensure_stackup(s):
+    if "(stackup" in s:
+        return s
+    i = s.index("\t(setup")
+    j = s.index("\n", i)
+    return s[:j + 1] + STACKUP + s[j + 1:]
 
 
 def strip_previous(s):
@@ -165,6 +206,7 @@ def main():
     s = open(PCB).read()
     before = s.count("(segment") + s.count("(via") + s.count("(zone")
     s = strip_previous(s)
+    s = ensure_stackup(s)
     i = s.rstrip().rindex(")")
     s = s[:i] + build() + s[i:]
     open(PCB, "w").write(s)
