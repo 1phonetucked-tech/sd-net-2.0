@@ -143,9 +143,9 @@ PLACE.update(FIXED)
 
 
 STACKUP = """\t\t(stackup
-\t\t\t(layer "F.SilkS" (type "Top Silk Screen"))
+\t\t\t(layer "F.SilkS" (type "Top Silk Screen") (color "White"))
 \t\t\t(layer "F.Paste" (type "Top Solder Paste"))
-\t\t\t(layer "F.Mask" (type "Top Solder Mask") (thickness 0.01))
+\t\t\t(layer "F.Mask" (type "Top Solder Mask") (color "Black") (thickness 0.01))
 \t\t\t(layer "F.Cu" (type "copper") (thickness 0.035))
 \t\t\t(layer "dielectric 1" (type "prepreg") (thickness 0.1855) (material "FR4") (epsilon_r 4.74) (loss_tangent 0.02))
 \t\t\t(layer "In1.Cu" (type "copper") (thickness 0.035))
@@ -153,9 +153,9 @@ STACKUP = """\t\t(stackup
 \t\t\t(layer "In2.Cu" (type "copper") (thickness 0.035))
 \t\t\t(layer "dielectric 3" (type "prepreg") (thickness 0.1855) (material "FR4") (epsilon_r 4.74) (loss_tangent 0.02))
 \t\t\t(layer "B.Cu" (type "copper") (thickness 0.035))
-\t\t\t(layer "B.Mask" (type "Bottom Solder Mask") (thickness 0.01))
+\t\t\t(layer "B.Mask" (type "Bottom Solder Mask") (color "Black") (thickness 0.01))
 \t\t\t(layer "B.Paste" (type "Bottom Solder Paste"))
-\t\t\t(layer "B.SilkS" (type "Bottom Silk Screen"))
+\t\t\t(layer "B.SilkS" (type "Bottom Silk Screen") (color "White"))
 \t\t\t(copper_finish "ENIG")
 \t\t\t(dielectric_constraints no)
 \t\t)
