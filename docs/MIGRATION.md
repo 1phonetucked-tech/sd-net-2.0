@@ -81,11 +81,22 @@ sits at the pin of the rail it now serves.
 - ✅ **Schematic built and verified.** `hardware/sd-net.kicad_sch` — ERC clean (0 errors),
   netlist verified against intent and diffed against rev 1.5 by `tools/verify_netlist.py`.
   13 placements (rev 1.5's 11, plus C7/C8 for VCARD and VDDA decoupling).
-- ⏸ **Awaiting design review** before layout starts.
-- ⬜ **Footprints.** `SD-006M` and `USB-AM90` need project-local footprints, derivable from
-  the pad geometry in the Altium ASCII export. Until they exist, ERC reports 2 warnings about
-  the missing `sd-net` footprint library.
+- ✅ **Footprints built.** `hardware/sd-net.pretty/` holds `SD-006M` and `USB-AM90`, derived
+  by `tools/gen_footprints.py` from the pad geometry of the board that was actually
+  fabricated. Round-trip verified back against the export to sub-micron agreement. ERC is now
+  **0 errors, 0 warnings**.
 - ⬜ **PCB layout.**
+
+Connector decision (2026-07-31): **staying with the AM90 through-hole USB-A male plug.** SMD
+right-angle USB-A male plugs exist (Assmann, Molex, Würth) but none were findable on LCSC, so
+they'd be special-order hand-placed parts — costlier than the six THT joints they'd replace.
+USB-C was considered and rejected on mechanics: a USB-C plug is 8.34 × 2.56 mm against
+USB-A's 12.0 × 4.5 mm, roughly 7–8× less resistant to the bending load of a cantilevered
+board, and it would lose the AM90's two 2.6 mm through-hole mounting posts.
+
+⚠️ **Open mechanical concern:** the board is 113.85 × 74.56 mm, cantilevered off a single USB
+plug. That's a lot of leverage on both the connector and the host's port, and it applies to
+rev 1.5's design as much as to any alternative. Worth revisiting before a giveaway run.
 
 ### How the schematic was built
 
