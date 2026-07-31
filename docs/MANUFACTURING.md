@@ -52,14 +52,29 @@ assembly offering is narrower than PCBWay's.
 3. **Email sponsor@pcbway.com** with: OSHWA UID US002797, the GitHub repo link, what the board
    is, how many you want, and that they're being given away — not sold. Attach a render or
    photo. Ask specifically about their open-source sponsorship, not a student discount.
-4. **Publish to PCBWay shared projects** regardless of whether sponsorship lands.
-5. **One email to Aisler DevRel** in parallel. Costs nothing.
+4. **One email to Aisler DevRel** in parallel. Costs nothing.
 
-## Quantity note
+The canonical public home is the **GitHub repo** — that's the decided distribution channel.
+PCBWay's shared-projects gallery is worth attaching to the sponsorship pitch (it's what their
+program expects to see), but it isn't a second place the project lives.
 
-Decide the giveaway quantity before quoting — PCBA setup cost (stencil, feeder setup)
-dominates at low volume, so 30 boards often costs barely more than 10. Get quotes at 10 / 30 /
-50 and pick the knee of the curve.
+## Quantity
+
+**Target ~30 units.** PCBA setup cost (stencil, feeder setup) dominates at low volume, so 30
+often costs barely more than 10 in total. Still quote 10 / 30 / 50 to confirm where the knee
+actually falls for this BOM.
+
+## Quote these two things explicitly
+
+Both come from `REV1.5-BASELINE.md` and both move the price:
+
+1. **USB1 is through-hole** (AM90 right-angle USB-A male). THT is not part of standard
+   economic SMT assembly — it's hand-soldered and billed per joint, and the cheapest JLCPCB
+   assembly tiers may decline it. Six joints, so it's small money, but ask up front. PCBWay
+   handles mixed THT/SMT more willingly, which is a real point in their favor here.
+2. **The board is a shaped outline, 113.85 × 74.56 mm**, with an arc top, angled sides and a
+   protruding tab — not a rectangle. Some fabs charge for non-rectangular routing or CNC
+   profiling beyond a simple outline. Confirm it's included.
 
 ## Sources
 
