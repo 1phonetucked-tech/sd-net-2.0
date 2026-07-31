@@ -1,0 +1,2 @@
+Drop the EasyEDA Pro "Export -> Altium Designer" zip here (.SchDoc + .PcbDoc).
+See ../../../docs/MIGRATION.md step 1.
