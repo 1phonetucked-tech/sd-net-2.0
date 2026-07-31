@@ -84,6 +84,32 @@ def extract(ref):
     return rot, out
 
 
+# Non-plated mounting/locating holes. EasyEDA exported these as board-level
+# NPTH drills rather than component pads, so they do not appear in the Pad
+# records and have to be added by hand. Coordinates are taken from
+# Drill_NPTH_Through.DRL and expressed in each footprint's own frame:
+#
+#   USB1  1.0 mm @ (70.068, 23.971) and (65.568, 23.971) -- AM90 locating pegs
+#         origin (67.818, 25.146), rotation 0
+#   CARD1 1.6 mm @ (56.099, 67.686) and (80.299, 67.686) -- SD socket pegs
+#         origin (68.199, 54.610), rotation 180
+#
+# Without these neither connector seats on the board.
+NPTH = {
+    "USB-AM90": [(2.250, 1.175, 1.0), (-2.250, 1.175, 1.0)],
+    "SD-006M": [(12.100, 13.076, 1.6), (-12.100, 13.076, 1.6)],
+}
+
+
+def npth_sexp(x, y, d):
+    return (f'\t(pad "" np_thru_hole circle\n'
+            f'\t\t(at {x} {y})\n'
+            f'\t\t(size {d} {d})\n'
+            f'\t\t(drill {d})\n'
+            f'\t\t(layers "F&B.Cu" "*.Mask")\n'
+            f'\t)\n')
+
+
 def pad_sexp(p):
     if p["drill"] > 0:
         shape = "circle" if p["shape"] == "ROUND" else "rect"
@@ -117,7 +143,10 @@ def courtyard(pads, margin=0.5):
 
 def build(name, ref, descr, tags):
     rot, pads = extract(ref)
-    body, (x0, y0, x1, y1) = courtyard(pads)
+    holes = NPTH.get(name, [])
+    # Mounting holes count toward the courtyard extent.
+    body, (x0, y0, x1, y1) = courtyard(
+        pads + [{"x": hx, "y": hy, "w": hd, "h": hd} for hx, hy, hd in holes])
     fp = (f'(footprint "{name}"\n'
           f'\t(version {FP_VERSION})\n'
           f'\t(generator "sd-net gen_footprints.py")\n'
@@ -131,10 +160,11 @@ def build(name, ref, descr, tags):
           f'\t\t(layer "F.Fab")\n\t\t(effects (font (size 1 1) (thickness 0.15)))\n\t)\n'
           + body
           + "".join(pad_sexp(p) for p in pads)
+          + "".join(npth_sexp(*h) for h in holes)
           + "\t(embedded_fonts no)\n)\n")
     os.makedirs(PRETTY, exist_ok=True)
     open(os.path.join(PRETTY, name + ".kicad_mod"), "w").write(fp)
-    print(f"{name}: {len(pads)} pads, rev1.5 rotation {rot:g}, "
+    print(f"{name}: {len(pads)} pads + {len(holes)} NPTH, rev1.5 rotation {rot:g}, "
           f"extent {x1 - x0:.2f} x {y1 - y0:.2f} mm")
     return rot, pads
 

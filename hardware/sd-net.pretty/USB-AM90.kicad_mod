@@ -65,5 +65,17 @@
 		(drill 2.601)
 		(layers "*.Cu" "*.Mask")
 	)
+	(pad "" np_thru_hole circle
+		(at 2.25 1.175)
+		(size 1.0 1.0)
+		(drill 1.0)
+		(layers "F&B.Cu" "*.Mask")
+	)
+	(pad "" np_thru_hole circle
+		(at -2.25 1.175)
+		(size 1.0 1.0)
+		(drill 1.0)
+		(layers "F&B.Cu" "*.Mask")
+	)
 	(embedded_fonts no)
 )
