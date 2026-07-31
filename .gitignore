@@ -16,3 +16,6 @@ hardware/build/
 
 # Gerber working copy (regenerate from the zip in fab/)
 fab/v1.5-easyeda/gerber-extracted/
+
+# KiCad 10 local history (its own nested git repo)
+.history/
