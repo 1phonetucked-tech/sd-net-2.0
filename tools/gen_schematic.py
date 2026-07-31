@@ -315,8 +315,8 @@ PARTS = {
     "C8":    ("Device:C",        "100nF",        "Capacitor_SMD:C_0603_1608Metric",       170.18, 148.59),
     "C3":    ("Device:C",        "10uF",         "Capacitor_SMD:C_0805_2012Metric",       190.50, 148.59),
     "C7":    ("Device:C",        "100nF",        "Capacitor_SMD:C_0603_1608Metric",       210.82, 148.59),
-    "R1":    ("Device:R",        "220",          "Resistor_SMD:R_0603_1608Metric",         68.58, 173.99),
-    "LED1":  ("Device:LED",      "12-215SYGC",   "LED_SMD:LED_0603_1608Metric",            96.52, 173.99),
+    "R1":    ("Device:R",        "220",          "Resistor_SMD:R_0603_1608Metric",         68.58, 184.15),
+    "LED1":  ("Device:LED",      "12-215SYGC",   "LED_SMD:LED_0603_1608Metric",           109.22, 184.15),
 }
 
 # Pins that are deliberately left floating. Marking them no-connect is the
@@ -328,7 +328,7 @@ NC_PINS = [("U1", "11"), ("CARD1", "CD"), ("CARD1", "WP")]
 
 # GND is fed only by power_input pins (the USB shell and both VSS pairs), so ERC
 # needs a flag telling it the net really is driven.
-PWR_FLAGS = [("GND", 60.96, 190.5)]
+PWR_FLAGS = [("GND", 170.18, 184.15)]
 
 # LCSC part numbers, carried into the BOM.
 LCSC = {
@@ -487,7 +487,7 @@ def main():
                 conns += glabel(net, x, y - STUB, 90, "left")
             else:
                 conns += wire(x, y, x, y + STUB)
-                conns += glabel(net, x, y + STUB, 270, "left")
+                conns += glabel(net, x, y + STUB, 270, "right")
 
     # Deliberately floating pins get an explicit no-connect marker.
     for ref, num in NC_PINS:
@@ -505,7 +505,7 @@ def main():
             conns += glabel(net, px, py - STUB, 90, "left")
         else:
             conns += wire(px, py, px, py + STUB)
-            conns += glabel(net, px, py + STUB, 270, "left")
+            conns += glabel(net, px, py + STUB, 270, "right")
 
     sch = (
         "(kicad_sch\n"
