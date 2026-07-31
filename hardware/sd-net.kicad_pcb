@@ -53,7 +53,7 @@
 	(net 15 "VDDA")
 	(footprint "Package_SO:SSOP-16_3.9x4.9mm_P0.635mm"
 		(layer "F.Cu")
-		(uuid "f9f3166f-2b48-4213-b332-0401e0a95b85")
+		(uuid "8e157dc5-6650-4ebf-8b8e-1dc58f8cb568")
 		(at 88.326 85.71 180)
 		(property "LCSC" "C284879"
 			(at 0 0 0)
@@ -73,7 +73,7 @@
 				)
 			)
 		)
-		(property "Value" "SSOP-16_3.9x4.9mm_P0.635mm"
+		(property "Value" "GL823K-HCY04"
 			(at 0 3.4 0)
 			(layer "F.Fab")
 			(effects
@@ -385,7 +385,7 @@
 	)
 	(footprint "sd-net:SD-006M"
 		(layer "F.Cu")
-		(uuid "d0fe2242-cf51-4ce8-82a4-08eb20194efd")
+		(uuid "025f7025-4335-497a-82a7-427ff45f63a5")
 		(at 88.199 65.39 180)
 		(property "LCSC" "C125615"
 			(at 0 0 0)
@@ -511,7 +511,7 @@
 	)
 	(footprint "sd-net:USB-AM90"
 		(layer "F.Cu")
-		(uuid "0145e625-99c3-4c75-8678-db688b60cc9e")
+		(uuid "241bf86f-4c90-40d3-840e-c0b53cf1b0e9")
 		(at 87.818 94.854)
 		(property "LCSC" "C404965"
 			(at 0 0 0)
@@ -527,7 +527,7 @@
 			(layer "F.SilkS")
 			(effects (font (size 1 1) (thickness 0.15)))
 		)
-		(property "Value" "USB-AM90"
+		(property "Value" "AM90"
 			(at 0 4.201 0)
 			(layer "F.Fab")
 			(effects (font (size 1 1) (thickness 0.15)))
@@ -603,7 +603,7 @@
 	)
 	(footprint "Capacitor_SMD:C_0805_2012Metric"
 		(layer "F.Cu")
-		(uuid "8589532c-b6a9-46a8-b87f-d986d28d729e")
+		(uuid "14542db2-fbca-488e-86c1-61147e2c295a")
 		(at 79.0 84.4)
 		(property "LCSC" "C15850"
 			(at 0 0 0)
@@ -623,7 +623,7 @@
 				)
 			)
 		)
-		(property "Value" "C_0805_2012Metric"
+		(property "Value" "10uF"
 			(at 0 1.68 0)
 			(layer "F.Fab")
 			(effects
@@ -722,7 +722,7 @@
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
 		(layer "F.Cu")
-		(uuid "d58276f6-dd7d-4896-ba8a-040c0fd11bb4")
+		(uuid "5b497832-818d-4093-8f7b-d18e55f680dc")
 		(at 82.5 84.4)
 		(property "LCSC" "C14663"
 			(at 0 0 0)
@@ -742,7 +742,7 @@
 				)
 			)
 		)
-		(property "Value" "C_0603_1608Metric"
+		(property "Value" "100nF"
 			(at 0 1.43 0)
 			(layer "F.Fab")
 			(effects
@@ -841,7 +841,7 @@
 	)
 	(footprint "Capacitor_SMD:C_0805_2012Metric"
 		(layer "F.Cu")
-		(uuid "adcdefa2-0a2e-49bd-8dcb-78836224d356")
+		(uuid "ec9654a2-b046-437f-97d2-64972fef7955")
 		(at 79.0 82.0)
 		(property "LCSC" "C15850"
 			(at 0 0 0)
@@ -861,7 +861,7 @@
 				)
 			)
 		)
-		(property "Value" "C_0805_2012Metric"
+		(property "Value" "10uF"
 			(at 0 1.68 0)
 			(layer "F.Fab")
 			(effects
@@ -960,7 +960,7 @@
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
 		(layer "F.Cu")
-		(uuid "332c049a-be43-42e8-8fb5-696eabc639e3")
+		(uuid "bd204cb4-5955-43e4-b3a7-6e9ea23160f8")
 		(at 82.5 82.0)
 		(property "LCSC" "C14663"
 			(at 0 0 0)
@@ -980,7 +980,7 @@
 				)
 			)
 		)
-		(property "Value" "C_0603_1608Metric"
+		(property "Value" "100nF"
 			(at 0 1.43 0)
 			(layer "F.Fab")
 			(effects
@@ -1079,7 +1079,7 @@
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
 		(layer "F.Cu")
-		(uuid "969af711-9059-4f73-b11f-d374b79f4f6a")
+		(uuid "31999278-7ab4-4764-84f0-e0e0a7bc4db4")
 		(at 82.5 86.8)
 		(property "LCSC" "C14663"
 			(at 0 0 0)
@@ -1099,7 +1099,7 @@
 				)
 			)
 		)
-		(property "Value" "C_0603_1608Metric"
+		(property "Value" "100nF"
 			(at 0 1.43 0)
 			(layer "F.Fab")
 			(effects
@@ -1198,7 +1198,7 @@
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
 		(layer "F.Cu")
-		(uuid "946b0958-e989-49f7-b702-5842da4c5396")
+		(uuid "8702779e-fc61-43f9-b33a-cc5a9d394813")
 		(at 79.0 86.8)
 		(property "LCSC" "C14663"
 			(at 0 0 0)
@@ -1218,7 +1218,7 @@
 				)
 			)
 		)
-		(property "Value" "C_0603_1608Metric"
+		(property "Value" "100nF"
 			(at 0 1.43 0)
 			(layer "F.Fab")
 			(effects
@@ -1317,7 +1317,7 @@
 	)
 	(footprint "Capacitor_SMD:C_0805_2012Metric"
 		(layer "F.Cu")
-		(uuid "6b7cc795-b68a-4ba0-8c3f-5f9016b2382c")
+		(uuid "48f9ce35-ed5b-4f35-b6a5-4ee0bcdf9944")
 		(at 93.5 81.2)
 		(property "LCSC" "C15850"
 			(at 0 0 0)
@@ -1337,7 +1337,7 @@
 				)
 			)
 		)
-		(property "Value" "C_0805_2012Metric"
+		(property "Value" "10uF"
 			(at 0 1.68 0)
 			(layer "F.Fab")
 			(effects
@@ -1436,7 +1436,7 @@
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
 		(layer "F.Cu")
-		(uuid "b314b256-fafe-4a84-af22-3610ffa86232")
+		(uuid "ba3e45fc-3700-43df-8928-7fb74668c6e6")
 		(at 93.5 79.0)
 		(property "LCSC" "C14663"
 			(at 0 0 0)
@@ -1456,7 +1456,7 @@
 				)
 			)
 		)
-		(property "Value" "C_0603_1608Metric"
+		(property "Value" "100nF"
 			(at 0 1.43 0)
 			(layer "F.Fab")
 			(effects
@@ -1555,7 +1555,7 @@
 	)
 	(footprint "Resistor_SMD:R_0603_1608Metric"
 		(layer "F.Cu")
-		(uuid "4c5defaf-010c-426c-93dd-c253c2db76b8")
+		(uuid "c4c9563c-77ff-40c6-9bdd-77a777b30f52")
 		(at 57.719 94.6)
 		(property "LCSC" "C22962"
 			(at 0 0 0)
@@ -1575,7 +1575,7 @@
 				)
 			)
 		)
-		(property "Value" "R_0603_1608Metric"
+		(property "Value" "220"
 			(at 0 1.43 0)
 			(layer "F.Fab")
 			(effects
@@ -1674,7 +1674,7 @@
 	)
 	(footprint "LED_SMD:LED_0603_1608Metric"
 		(layer "F.Cu")
-		(uuid "22c8f1d9-7a92-49fe-ac70-068865fa01a4")
+		(uuid "a3040b2e-68f8-4b3f-a0a4-79e881b84f1f")
 		(at 37.653 94.727)
 		(property "LCSC" "C131283"
 			(at 0 0 0)
@@ -1694,7 +1694,7 @@
 				)
 			)
 		)
-		(property "Value" "LED_0603_1608Metric"
+		(property "Value" "12-215SYGC"
 			(at 0 1.43 0)
 			(layer "F.Fab")
 			(effects
@@ -1840,21 +1840,21 @@
 		(end 78.012 39.19)
 		(stroke (width 0.1) (type default))
 		(layer "Edge.Cuts")
-		(uuid "2f942030-6031-410f-ae6b-8ed812586c13")
+		(uuid "98565baf-58b0-47bb-9526-bff6e668d06f")
 	)
 	(gr_line
 		(start 98.586 39.19)
 		(end 143.655 91.136)
 		(stroke (width 0.1) (type default))
 		(layer "Edge.Cuts")
-		(uuid "46f466d5-f6c9-45fc-a8bd-f795059f7689")
+		(uuid "7cc27763-b3ff-40f7-9bcd-cda49fdf20a6")
 	)
 	(gr_line
 		(start 33.181 99.388)
 		(end 140.451 99.481)
 		(stroke (width 0.1) (type default))
 		(layer "Edge.Cuts")
-		(uuid "c5aa5c36-2398-490c-abfb-066d249ba9d1")
+		(uuid "4ce17174-6afd-45ac-81fe-c7b038ac7b7c")
 	)
 	(gr_arc
 		(start 33.181 99.388)
@@ -1862,7 +1862,7 @@
 		(end 29.801 90.933)
 		(stroke (width 0.1) (type default))
 		(layer "Edge.Cuts")
-		(uuid "15414bcf-7be0-462c-9fd5-637b1f14e8eb")
+		(uuid "a8dcbbca-461f-481f-a7d7-502339a0c93e")
 	)
 	(gr_arc
 		(start 98.586 39.19)
@@ -1870,7 +1870,7 @@
 		(end 78.012 39.19)
 		(stroke (width 0.1) (type default))
 		(layer "Edge.Cuts")
-		(uuid "8fd1ceec-7c48-4f39-80b8-c021d4712e8d")
+		(uuid "5a9fc77b-e91e-4822-ba5e-571742a788cf")
 	)
 	(gr_arc
 		(start 140.451 99.481)
@@ -1878,7 +1878,7 @@
 		(end 143.655 91.136)
 		(stroke (width 0.1) (type default))
 		(layer "Edge.Cuts")
-		(uuid "ccaf010a-ff8c-4487-b3d5-2d177009248f")
+		(uuid "c9ea4230-35ce-4276-af22-0e108d414313")
 	)
 	(embedded_fonts no)
 )

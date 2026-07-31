@@ -155,6 +155,11 @@ def place(ref, lib_id, value, x, y, rot, netmap, netnames):
     body = re.sub(r'\t\(embedded_fonts \w+\)\n', '', body)
     body = re.sub(r'\t\(layer "F\.Cu"\)\n', '', body, count=1)
     body = body.replace('"REF**"', f'"{ref}"')
+    # A .kicad_mod's Value field holds the *footprint* name. On the board it has
+    # to hold the component value, or every part is labelled C_0805_2012Metric
+    # and the fab BOM is meaningless.
+    body = re.sub(r'\(property "Value" "[^"]*"',
+                  f'(property "Value" "{value}"', body, count=1)
 
     # Bind each pad to its net.
     def bind(m):
