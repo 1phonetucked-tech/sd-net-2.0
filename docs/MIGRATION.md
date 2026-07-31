@@ -29,6 +29,27 @@ Also grab, while you're in there:
 - **File → Export → Netlist** (any format) — a second netlist confirms the rail split later.
 - The **BOM** with LCSC part numbers, if it has more detail than the 2026-06-19 xlsx.
 
+## What's scriptable vs. GUI-only
+
+Verified against the installed KiCad **10.0.5**
+(`/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli`):
+
+- **PCB import is scriptable.** `kicad-cli pcb import --format altium` handles `.PcbDoc`
+  directly, and `--report-format json --report-file …` gives a machine-readable log of
+  everything the importer dropped or approximated. That report is the checklist for step 2.
+- **Schematic import is GUI-only.** `kicad-cli sch` has `erc`, `export` and `upgrade` — no
+  `import`. The `.SchDoc` has to go through **File → Import Non-KiCad Project** in the
+  Schematic Editor. Expect to do that one by hand.
+- **ERC and DRC are scriptable** — `kicad-cli sch erc` and `kicad-cli pcb drc`, so the
+  verification gates in step 4 can run automatically on every change.
+- **`kicad-cli pcb export ipcd356`** emits an IPC-D-356 netlist. That's the clean way to do
+  the rev 1.5 → 2.0 netlist diff, and it's the same class of data as the rev 1.5
+  flying-probe file we already have.
+- **`kicad-cli pcb render`** produces 3D PNGs — useful for the README and the PCBWay
+  sponsorship pitch, both of which want a picture of a board that doesn't physically exist yet.
+- **Image Converter.app** (bundled with KiCad) is what turns
+  `branding/oshwa_mark/oshw_gear_black.svg` into a placeable silkscreen footprint for step 4.
+
 ## Step 2 — import into KiCad (I'll drive this)
 
 1. `File → Import Non-KiCad Project → Altium Project`, or import `.PcbDoc` / `.SchDoc`
