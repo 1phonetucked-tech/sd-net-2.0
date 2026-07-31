@@ -23,7 +23,9 @@ python3 tools/xlsx2csv.py "fab/v1.5-easyeda/BOM_sd - net 1.5_sd - net 1.5_2026-0
 | U1 | **GL823K-HCY04** | **SSOP-16** (4.9 × 3.9, 0.64 pitch) | C284879 (Genesys) |
 | USB1 | **AM90 USB-A male, right-angle** | **USB-AM-TH** (through-hole) | C404965 (Shou Han) |
 
-Rev 2.0 must land on this same 11-placement, 7-line BOM — the rail fix adds no parts.
+Rev 2.0 keeps all of these and adds **C7 + C8** (100 nF 0603, LCSC C14663 — same part as
+C4/C5/C6), giving VCARD a high-frequency cap and VDDA a second one. **13 placements, 7 line
+items.** Reasoning in `POWER-DESIGN.md`.
 
 **U1 is SSOP-16, not QFN.** 0.64 mm pitch with visible leads: hand-solderable with a fine tip
 and flux, and very reworkable. Good news for debugging rev 2.0 by hand before committing to a

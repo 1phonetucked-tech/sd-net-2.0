@@ -273,21 +273,23 @@ def stock_pin_positions(blk):
 # ------------------------------------------------------------- schematic -----
 
 # Rev 2.0 netlist. Four separate power nodes -- see docs/POWER-DESIGN.md.
-#   +5V   VBUS input          : 10uF C1 + 100nF C4
-#   VDD   regulator output    : 10uF C2 + 100nF C5, feeds the LED via R1
-#   VDDA  PHY reg output      : 100nF C6, kept on its own net (never tied to VDD)
-#   VCARD switched card power : 10uF C3, at the socket
+#   +5V   VBUS input          : 10uF C1  + 100nF C4
+#   VDD   regulator output    : 10uF C2  + 100nF C5, feeds the LED via R1
+#   VDDA  PHY reg output      : 100nF C6 + 100nF C8, kept on its own net
+#                               (never tied to VDD -- see POWER-DESIGN.md)
+#   VCARD switched card power : 10uF C3  + 100nF C7, both at the socket
 NETS = {
     "+5V":      [("USB1", "1"), ("U1", "10"), ("C1", "1"), ("C4", "1")],
     "VDD":      [("U1", "9"), ("C2", "1"), ("C5", "1"), ("R1", "1")],
-    "VDDA":     [("U1", "13"), ("C6", "1")],
-    "VCARD":    [("U1", "8"), ("CARD1", "4"), ("C3", "1")],
+    "VDDA":     [("U1", "13"), ("C6", "1"), ("C8", "1")],
+    "VCARD":    [("U1", "8"), ("CARD1", "4"), ("C3", "1"), ("C7", "1")],
     "GND":      [("U1", "1"), ("U1", "14"), ("USB1", "4"),
                  ("CARD1", "3"), ("CARD1", "6"),
                  ("CARD1", "12"), ("CARD1", "13"),
                  ("USB1", "MH1"), ("USB1", "MH2"),
                  ("C1", "2"), ("C2", "2"), ("C3", "2"),
-                 ("C4", "2"), ("C5", "2"), ("C6", "2")],
+                 ("C4", "2"), ("C5", "2"), ("C6", "2"),
+                 ("C7", "2"), ("C8", "2")],
     "SD_CMD":   [("CARD1", "2"), ("U1", "5")],
     "SD_CLK":   [("CARD1", "5"), ("U1", "4")],
     "SD_DAT0":  [("CARD1", "7"), ("U1", "3")],
@@ -310,7 +312,9 @@ PARTS = {
     "C2":    ("Device:C",        "10uF",         "Capacitor_SMD:C_0805_2012Metric",       109.22, 148.59),
     "C5":    ("Device:C",        "100nF",        "Capacitor_SMD:C_0603_1608Metric",       129.54, 148.59),
     "C6":    ("Device:C",        "100nF",        "Capacitor_SMD:C_0603_1608Metric",       149.86, 148.59),
-    "C3":    ("Device:C",        "10uF",         "Capacitor_SMD:C_0805_2012Metric",       170.18, 148.59),
+    "C8":    ("Device:C",        "100nF",        "Capacitor_SMD:C_0603_1608Metric",       170.18, 148.59),
+    "C3":    ("Device:C",        "10uF",         "Capacitor_SMD:C_0805_2012Metric",       190.50, 148.59),
+    "C7":    ("Device:C",        "100nF",        "Capacitor_SMD:C_0603_1608Metric",       210.82, 148.59),
     "R1":    ("Device:R",        "220",          "Resistor_SMD:R_0603_1608Metric",         68.58, 173.99),
     "LED1":  ("Device:LED",      "12-215SYGC",   "LED_SMD:LED_0603_1608Metric",            96.52, 173.99),
 }
@@ -331,6 +335,7 @@ LCSC = {
     "U1": "C284879", "CARD1": "C125615", "USB1": "C404965",
     "C1": "C15850", "C2": "C15850", "C3": "C15850",
     "C4": "C14663", "C5": "C14663", "C6": "C14663",
+    "C7": "C14663", "C8": "C14663",
     "R1": "C22962", "LED1": "C131283",
 }
 

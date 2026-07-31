@@ -80,6 +80,8 @@ sits at the pin of the rail it now serves.
 
 - ✅ **Schematic built and verified.** `hardware/sd-net.kicad_sch` — ERC clean (0 errors),
   netlist verified against intent and diffed against rev 1.5 by `tools/verify_netlist.py`.
+  13 placements (rev 1.5's 11, plus C7/C8 for VCARD and VDDA decoupling).
+- ⏸ **Awaiting design review** before layout starts.
 - ⬜ **Footprints.** `SD-006M` and `USB-AM90` need project-local footprints, derivable from
   the pad geometry in the Altium ASCII export. Until they exist, ERC reports 2 warnings about
   the missing `sd-net` footprint library.
@@ -110,8 +112,11 @@ Both produce nothing but `Failed to load schematic`, with no line number:
 2. Only the **outer** symbol takes the `Lib:Name` form. Child unit symbols keep their bare
    `Name_0_1` / `Name_1_1` names. Qualifying them breaks the file.
 
-Also note the `.kicad_sch` and `.kicad_sym` format version numbers are unrelated — this
-project writes `20250114` for schematics and `20251024` for symbol libraries.
+3. The `.kicad_sch` and `.kicad_sym` format version numbers are unrelated. KiCad 10 writes
+   `20260306` for schematics and `20251024` for symbol libraries. Emitting the KiCad 9
+   schematic version `20250114` still loads, but greets you with an "older version of KiCad"
+   conversion banner. If you need to discover the current number, run `kicad-cli sch upgrade`
+   on a file and read it back.
 
 ## Step 2 (superseded) — import into KiCad
 

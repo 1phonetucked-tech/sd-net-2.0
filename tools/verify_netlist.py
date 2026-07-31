@@ -135,9 +135,19 @@ def main():
         dest.setdefault(new_of.get(node, "(dropped)"), []).append(node)
     for net in sorted(dest):
         print(f"    {net:<7} <- {' '.join(f'{r}.{p}' for r, p in dest[net])}")
-    print("\n  newly connected (were floating in rev 1.5):")
-    for node, o, n in moved:
-        if o == "(unconnected)":
+    rev15_refs = {r for members in REV15.values() for r, _ in members}
+    added = [(node, n) for node, o, n in moved if o == "(unconnected)"]
+
+    grounded = [(node, n) for node, n in added if node[0] in rev15_refs]
+    if grounded:
+        print("\n  pads that were floating in rev 1.5, now connected:")
+        for node, n in grounded:
+            print(f"    {node[0]}.{node[1]:<4} -> {n}")
+
+    new_parts = [(node, n) for node, n in added if node[0] not in rev15_refs]
+    if new_parts:
+        print("\n  parts added since rev 1.5:")
+        for node, n in new_parts:
             print(f"    {node[0]}.{node[1]:<4} -> {n}")
     dropped = [m for m in moved if m[2] == "(dropped)"]
     if dropped:

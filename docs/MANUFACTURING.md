@@ -68,10 +68,11 @@ actually falls for this BOM.
 
 Both come from `REV1.5-BASELINE.md` and both move the price:
 
-1. **USB1 is through-hole** (AM90 right-angle USB-A male). THT is not part of standard
-   economic SMT assembly — it's hand-soldered and billed per joint, and the cheapest JLCPCB
-   assembly tiers may decline it. Six joints, so it's small money, but ask up front. PCBWay
-   handles mixed THT/SMT more willingly, which is a real point in their favor here.
+1. **13 placements, one of them through-hole.** USB1 is an AM90 right-angle USB-A male plug.
+   THT is not part of standard economic SMT assembly — it's hand-soldered and billed per
+   joint, and the cheapest JLCPCB tiers may decline it. Six joints, so it's small money, but
+   ask up front. PCBWay handles mixed THT/SMT more willingly, which is a point in their
+   favor here.
 2. **The board is a shaped outline, 113.85 × 74.56 mm**, with an arc top, angled sides and a
    protruding tab — not a rectangle. Some fabs charge for non-rectangular routing or CNC
    profiling beyond a simple outline. Confirm it's included.

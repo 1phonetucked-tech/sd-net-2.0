@@ -58,12 +58,17 @@ stronger than the netlist alone showed.
 The revised topology — this supersedes the "three rails, one 10 µF + 100 nF pair each" table
 in `RESUME_NOTES.md`, which treated all three as equivalent supply rails:
 
-| Node | Pin(s) | Direction | Treatment |
-|---|---|---|---|
-| **5 V / VBUS** | `USB1.1` → `U1.10` | **input** | Bulk 10 µF + 100 nF to GND, close to pin 10 |
-| **VDD** | `U1.9` | regulator **output** | 100 nF to GND at the pin, + bulk 10 µF |
-| **VDDA** | `U1.13` | regulator **output** | 100 nF to GND at the pin — PHY rail, keep this one tight and short |
-| **VCARD** | `U1.8` → `CARD1.4` | switched **output** | 10 µF + 100 nF at the *socket*, not at the chip |
+| Node | Pin(s) | Direction | Treatment | Caps |
+|---|---|---|---|---|
+| **+5V** | `USB1.1` → `U1.10` | **input** | Bulk + HF to GND, close to pin 10 | C1 10 µF, C4 100 nF |
+| **VDD** | `U1.9` | regulator **output** | HF at the pin, plus bulk | C2 10 µF, C5 100 nF |
+| **VDDA** | `U1.13` | regulator **output** | PHY rail — keep tight and short | C6 100 nF, C8 100 nF |
+| **VCARD** | `U1.8` → `CARD1.4` | switched **output** | At the *socket*, not the chip | C3 10 µF, C7 100 nF |
+
+**C7 and C8 are new in rev 2.0** (100 nF 0603, LCSC C14663 — same part as C4/C5/C6). Rev 1.5's
+six caps stretch to three rails, not four: without them VCARD gets bulk but no high-frequency
+decoupling, and VDDA gets neither a second cap nor any bulk. Two extra 0603s cost about a cent
+each on a board that's being respun regardless. BOM goes 11 → 13 placements.
 
 Nothing external drives VDD or VDDA. Nothing ties them to 5 V. Nothing ties any of them to
 PMOS.
