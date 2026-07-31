@@ -346,7 +346,7 @@ LABEL_POS = {
     "sd-net:USB-AM90": (0, -12.70, "center"),
     "Device:C":        (3.81, -1.27, "left"),
     "Device:R":        (3.81, -1.27, "left"),
-    "Device:LED":      (3.81, -1.27, "left"),
+    "Device:LED":      (0, -5.08, "center"),   # horizontal part: text goes above
     "power:PWR_FLAG":  (3.81, -1.27, "left"),
 }
 
@@ -437,8 +437,10 @@ def main():
             lx = -(half_w + 5.08) if side == "L" else (half_w + 5.08)
             return px + lx, py - ly, side
         lx, ly, ang = stock_pins[lib_id][num]
-        # Device:C / R / LED pins point up (90) and down (270).
-        side = "U" if ang == 270 else "D"
+        # A pin's angle is the direction from its connection point toward the
+        # symbol body, so the connection sits on the opposite side. Device:C and
+        # Device:R are vertical (270/90); Device:LED is horizontal (0/180).
+        side = {0: "L", 180: "R", 270: "U", 90: "D"}[ang]
         return px + lx, py - ly, side
 
     # Build lib_symbols section. Every block -- ours and KiCad's -- goes through

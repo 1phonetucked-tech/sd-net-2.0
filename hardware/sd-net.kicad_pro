@@ -2,5 +2,5 @@
   "board": {"design_settings": {"defaults": {}}},
   "meta": {"filename": "sd-net.kicad_pro", "version": 3},
   "schematic": {"legacy_lib_dir": "", "legacy_lib_list": []},
-  "sheets": [["9081c948-1d60-4f6f-8cc7-11daea454aad", "Root"]]
+  "sheets": [["454a1c01-2ff6-4d72-bb44-9726975a5cb6", "Root"]]
 }
