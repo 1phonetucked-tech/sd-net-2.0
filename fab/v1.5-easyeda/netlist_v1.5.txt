@@ -1,0 +1,31 @@
+# 11 components, 13 nets
+
+## Components
+
+  C4      C0603                              @ 5887.5mil,4285mil rot=0 TOP
+  C5      C0603                              @ 5882.5mil,4165mil rot=0 TOP
+  C6      C0603                              @ 5882.5mil,4045mil rot=0 TOP
+  CARD1   SD-SMD_SD-006M                     @ 6092.5mil,4955mil rot=180 TOP
+  LED1    LED-SMD_12-215SYGC-S530-E2-TR8     @ 4102.5mil,3800mil rot=0 TOP
+  R1      R0603                              @ 4892.5mil,3805mil rot=0 TOP
+  USB1    USB-AM-TH_AM90                     @ 6077.5mil,3795mil rot=0 TOP
+  U1      SSOP-16_L4.9-W3.9-P0.64-LS6.0-BL   @ 6097.5mil,4155mil rot=180 TOP
+  C2      C0805                              @ 6322.5mil,4180mil rot=0 TOP
+  C3      C0805                              @ 6322.5mil,4040mil rot=0 TOP
+  C1      C0805                              @ 6317.5mil,4310mil rot=0 TOP
+
+## Nets
+
+  [ 0] $1N2351      C1.1 C2.1 C3.1 C4.1 C5.1 C6.1 CARD1.4 R1.1 U1.13 U1.8 U1.9  <-- 11 nodes
+  [ 1] $1N2355      CARD1.2 U1.5
+  [ 2] $1N2362      CARD1.9 U1.7
+  [ 3] $1N2356      CARD1.1 U1.6
+  [ 4] $1N2358      CARD1.5 U1.4
+  [ 5] $1N2361      CARD1.8 U1.2
+  [ 6] GND          C1.2 C2.2 C3.2 C4.2 C5.2 C6.2 CARD1.3 CARD1.6 U1.1 U1.14 USB1.4  <-- 11 nodes
+  [ 7] $1N2347      U1.10 USB1.1
+  [ 8] $1N2352      LED1.2 R1.2
+  [ 9] $1N2353      LED1.1 U1.12
+  [10] $1N2360      CARD1.7 U1.3
+  [11] $1N3940      U1.15 USB1.3
+  [12] $1N3946      U1.16 USB1.2

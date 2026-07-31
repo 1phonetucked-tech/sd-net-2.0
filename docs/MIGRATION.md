@@ -50,7 +50,33 @@ Verified against the installed KiCad **10.0.5**
 - **Image Converter.app** (bundled with KiCad) is what turns
   `branding/oshwa_mark/oshw_gear_black.svg` into a placeable silkscreen footprint for step 4.
 
-## Step 2 — import into KiCad (I'll drive this)
+## ⛔ Step 2 as planned does not work — KiCad rejects the export
+
+Tested 2026-07-31 with the real files:
+
+```
+$ kicad-cli pcb import --format altium --output hardware/sd-net.kicad_pcb "sd - net 1.5.pcbdoc"
+Importing ... using Altium Designer format...
+Error during import: Wrong file format
+```
+
+**Cause:** KiCad's Altium importer expects the **binary** `.PcbDoc` (an OLE compound
+document, magic `D0 CF 11 E0`). EasyEDA Pro emits **Altium ASCII 5.0** — our files begin
+`|RECORD=Board|KIND=Protel_Advanced_PCB|VERSION=5.01` and
+`|HEADER=Protel for Windows - Schematic Capture Ascii File Version 5.0`. Different format,
+same extension. EasyEDA Pro has no binary export option, and converting ASCII→binary needs
+Altium Designer itself.
+
+So the Altium route is dead for a direct import. **But the ASCII is plain pipe-delimited
+text, which turns out to be better than an import would have been** — `tools/altium_netlist.py`
+reads the connectivity straight out of it. The full rev 1.5 netlist is now recovered exactly
+(see `REV1.5-BASELINE.md`), and it shows only one net is wrong.
+
+That makes a from-scratch KiCad build the sensible route: 11 components and 13 nets, with
+every connection known precisely, and the layout has to change anyway so each decoupling cap
+sits at the pin of the rail it now serves.
+
+## Step 2 (superseded) — import into KiCad
 
 1. `File → Import Non-KiCad Project → Altium Project`, or import `.PcbDoc` / `.SchDoc`
    individually into a fresh project at `hardware/sd-net.kicad_pro`.

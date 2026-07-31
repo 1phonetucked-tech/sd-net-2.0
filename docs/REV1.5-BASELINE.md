@@ -76,6 +76,47 @@ run out to the lower left — the LED is a long way from the controller, ~50 mm 
 mechanical fits. Everything else is free to re-place, and the decoupling caps *should* move:
 each pair belongs as close as possible to the pin of the rail it now serves.
 
+## Full netlist audit — only one net is wrong
+
+Extracted from the Altium ASCII export with `tools/altium_netlist.py`; saved at
+`fab/v1.5-easyeda/netlist_v1.5.txt`. 11 components, 13 nets. This is the fabricated design's
+actual connectivity — a third independent confirmation of the defect, after the `.tel`
+netlist and the flying-probe data.
+
+**The defect, confirmed exactly:**
+
+```
+[ 0] $1N2351   C1.1 C2.1 C3.1 C4.1 C5.1 C6.1 CARD1.4 R1.1 U1.13 U1.8 U1.9   <-- 11 nodes
+[ 7] $1N2347   U1.10 USB1.1                                                  <-- VBUS, no caps
+```
+
+**Everything else checks out.** This is the good news — rev 2.0 is a surgical change, not a
+redesign:
+
+| Function | Net | Verdict |
+|---|---|---|
+| USB D+ | `U1.15` (DP) ↔ `USB1.3` | ✅ correct |
+| USB D− | `U1.16` (DM) ↔ `USB1.2` | ✅ correct |
+| SD DAT3 | `CARD1.1` ↔ `U1.6` (D3) | ✅ |
+| SD CMD | `CARD1.2` ↔ `U1.5` (CMD) | ✅ |
+| SD VSS1/VSS2 | `CARD1.3`, `CARD1.6` → GND | ✅ |
+| SD VDD | `CARD1.4` → *net 0* | ⚠️ right pin, wrong net |
+| SD CLK | `CARD1.5` ↔ `U1.4` (CLK) | ✅ |
+| SD DAT0 | `CARD1.7` ↔ `U1.3` (D0) | ✅ |
+| SD DAT1 | `CARD1.8` ↔ `U1.2` (D1) | ✅ |
+| SD DAT2 | `CARD1.9` ↔ `U1.7` (D2) | ✅ |
+| LED | net0 → `R1` → `LED1` → `U1.12` | ✅ topology right, just needs moving off net 0 |
+| GND | `U1.1`, `U1.14`, `USB1.4`, all cap returns | ✅ |
+
+All nine SD card contacts land on the right controller pins, both USB data lines are on the
+right pins, and the LED is wired anode-side through R1 with its cathode on the pin-12 open
+drain — which is the correct way round. **The entire rev 1.5 failure is net 0.**
+
+**Unconnected pads** (matches `RESUME_NOTES.md`, all non-blocking):
+`CARD1.12` `CARD1.13` (shell tabs) · `CARD1.CD` `CARD1.WP` (card-detect, write-protect —
+optional) · `U1.11` (GPIO — acceptable per datasheet) · `USB1.MH1` `USB1.MH2` (USB shell
+mounting).
+
 ## Stackup
 
 4 layers — `GTL` / `G1` / `G2` / `GBL`. Copper layers span X 8.55–124.79, Y 20.88–85.19
