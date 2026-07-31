@@ -115,9 +115,30 @@ right pins, and the LED is wired anode-side through R1 with its cathode on the p
 drain — which is the correct way round. **The entire rev 1.5 failure is net 0.**
 
 **Unconnected pads** (matches `RESUME_NOTES.md`, all non-blocking):
-`CARD1.12` `CARD1.13` (shell tabs) · `CARD1.CD` `CARD1.WP` (card-detect, write-protect —
-optional) · `U1.11` (GPIO — acceptable per datasheet) · `USB1.MH1` `USB1.MH2` (USB shell
-mounting).
+`CARD1.12` `CARD1.13` (shell tabs) · `CARD1.CD` `CARD1.WP` · `U1.11` (GPIO) ·
+`USB1.MH1` `USB1.MH2` (USB shell mounting).
+
+### Why there is no card detect — it's a designed-in feature, not an omission
+
+The GL823K datasheet lists this in its own feature summary (§1):
+
+> Support **non-SD Card Detect pin**, non-MS Insertion/Removal pin design to save BOM cost
+> Support **non-SD Write Protection pin** design to save BOM cost
+
+The chip is explicitly built to work *without* a card-detect line — it detects cards by
+polling the SD bus instead. That's why the socket's mechanical CD and WP contacts go
+nowhere, and it's the right design, not an oversight.
+
+**Pin 11 is not a card-detect input.** The pin table calls it "General Purpose I/O"
+(type `I, pu` — input with pull-up) and nothing in the datasheet describes a function that
+reads it as card presence. Wiring `CARD1.CD` to `U1.11` would be electrically harmless — the
+internal pull-up plus a switch to ground is a valid arrangement — but there is no documented
+mechanism by which the controller would act on it. It would be decoration.
+
+Note also that `CARD1.1` (`DAT3_CD`) is correctly used as **DAT3**. That contact doubles as
+card-detect only in SPI mode; in the 4-bit SD mode this design uses, it's a data line.
+
+Rev 2.0 keeps CD and WP unconnected, now with explicit no-connect markers.
 
 ## Stackup
 
