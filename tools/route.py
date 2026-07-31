@@ -28,7 +28,7 @@ TAG = "5d4e7000"
 # traces clipping neighbouring pads. That last mile wants interactive routing
 # with push-and-shove. Ground pours and the stackup stay; flip this to False to
 # get the signal paths back as a starting point.
-GROUND_ONLY = True
+GROUND_ONLY = False
 
 # Board bounding box in KiCad coordinates; zones get clipped to Edge.Cuts.
 BBOX = (29.0, 38.0, 144.5, 100.5)
@@ -136,59 +136,74 @@ USB_DM_PATH = [(90.5075, 84.625), (90.5075, 91.50), (89.25, 93.85)]
 
 
 # --- SD bus -----------------------------------------------------------------
-# With U1 at 90 degrees the six SD signals leave CARD1 in the same left-to-right
-# order they arrive at U1, so straight point-to-point diagonals provably cannot
-# cross. Separation is widest at the socket and narrows to the 0.635 mm pad
-# pitch at the chip, which is the tightest point and still clears.
+# Six straight point-to-point diagonals. They leave CARD1 in the same
+# left-to-right order they arrive at U1, so they provably cannot cross.
+# Each signal fans diagonally to a common y, then drops STRAIGHT DOWN into its
+# pad. A pure diagonal arrives at an angle and clips the neighbouring pad on the
+# way in -- the pads are 0.4 mm wide on a 0.635 mm pitch, so there is no room to
+# come in sideways. The verticals sit one pad pitch apart and cannot touch.
+# Both ends need a straight exit: leaving the socket at an angle clips the
+# neighbouring contact just as arriving at U1 at an angle clips the next pad.
+# So each signal drops clear of the contact row, fans diagonally, then drops
+# straight into its pad.
+SD_EXIT_Y = 73.8
+SD_FAN_Y = 77.6
 SD = {
-    "SD_DAT2": [(78.72, 71.88), (86.6975, 79.375)],
-    "SD_DAT3": [(81.22, 71.88), (87.3325, 79.375)],
-    "SD_CMD":  [(83.72, 71.88), (87.9675, 79.375)],
-    "SD_CLK":  [(91.22, 71.88), (88.6025, 79.375)],
-    "SD_DAT0": [(96.15, 71.88), (89.2375, 79.375)],
-    "SD_DAT1": [(97.85, 71.88), (89.8725, 79.375)],
+    "SD_DAT2": [(79.021, 71.876), (79.021, SD_EXIT_Y), (86.712, SD_FAN_Y), (86.712, 79.375)],
+    "SD_DAT3": [(81.521, 71.876), (81.521, SD_EXIT_Y), (87.347, SD_FAN_Y), (87.347, 79.375)],
+    "SD_CMD":  [(84.020, 71.876), (84.020, SD_EXIT_Y), (87.983, SD_FAN_Y), (87.983, 79.375)],
+    "SD_CLK":  [(91.521, 71.876), (91.521, SD_EXIT_Y), (88.617, SD_FAN_Y), (88.617, 79.375)],
+    "SD_DAT0": [(96.451, 71.876), (96.451, SD_EXIT_Y), (89.252, SD_FAN_Y), (89.252, 79.375)],
+    "SD_DAT1": [(98.150, 71.876), (98.150, SD_EXIT_Y), (89.888, SD_FAN_Y), (89.888, 79.375)],
 }
 
-# VCARD is the one signal whose order does not match -- it starts 4th from the
-# left at the socket and lands leftmost at U1, so it must cross DAT2/DAT3/CMD.
-# It drops to B.Cu to do it, and picks up its two decoupling caps on the way.
-VCARD_BOT = [(88.72, 73.20), (84.50, 73.20), (84.50, 80.60)]
-VCARD_CAPS = [(88.72, 73.20), (100.0, 73.20), (100.0, 76.05)]
-VCARD_VIAS = [(88.72, 73.20), (84.50, 80.60), (100.0, 73.725), (100.0, 76.05)]
-VCARD_STUB_CARD = [(88.72, 71.88), (88.72, 73.20)]
-VCARD_STUB_U1 = [(84.50, 80.60), (86.0625, 79.375)]
+# VCARD is the one out-of-order signal: 4th from the left at the socket, leftmost
+# at U1. It drops to B.Cu to cross under DAT2/DAT3/CMD.
+VCARD_F1 = [(89.021, 71.876), (88.000, 75.025)]     # socket -> C7 pad 1
+VCARD_F2 = [(88.400, 73.700), (88.000, 75.025)]     # stub to the via
+VCARD_B  = [(88.400, 73.700), (84.800, 73.700), (84.800, 78.800)]
+VCARD_F3 = [(84.800, 78.800), (86.078, 79.375)]     # via -> U1 pin 8
+VCARD_F4 = [(83.950, 77.900), (84.800, 78.800)]     # C3 pad 1 -> via
+VCARD_VIAS = [(88.400, 73.700), (84.800, 78.800)]
 
-# --- power and LED ----------------------------------------------------------
-# Each high-frequency cap now sits directly under the pin it serves, so these
-# are millimetres rather than the 5 mm they were before the rotation.
-SHORT = {
-    "VDD":  [[(85.20, 86.225), (86.0625, 84.625)],          # C5.1 -> pin 9
-             [(83.40, 89.25), (85.20, 86.225)]],            # C2.1 -> C5.1
-    "+5V":  [[(87.00, 86.225), (86.6975, 84.625)],          # C4.1 -> pin 10
-             [(86.10, 89.25), (85.60, 88.20), (85.60, 86.90),
-              (87.00, 86.225)]],                            # C1.1 -> C4.1
-    "VDDA": [[(88.80, 86.225), (88.6025, 84.625)],          # C6.1 -> pin 13
-             [(88.80, 89.25), (88.80, 86.225)]],            # C8.1 -> C6.1
-    "LED_A": [[(37.50, 94.00), (50.00, 94.00), (50.00, 96.20),
-               (57.50, 96.20), (57.50, 94.00)]],                # around R1.1
+# --- USB pair ---------------------------------------------------------------
+# DP and DM are adjacent on U1's bottom row, so the pair runs straight down at
+# the native 0.634 mm pitch -- essentially the 0.646 mm solved for 90 ohm on
+# PCBWay's stackup -- then fans to the plug. No vias, no layer change.
+DIFF_W = 0.30
+USB_DP_PATH = [(89.888, 84.625), (89.888, 90.500), (87.302, 93.853)]
+USB_DM_PATH = [(90.522, 84.625), (90.522, 91.200), (89.301, 93.853)]
+
+# --- short power hops -------------------------------------------------------
+# The whole point of wrapping the caps around U1: these are now millimetres.
+HOPS = {
+    "VDD":  [[(84.500, 86.625), (86.078, 84.625)],      # C5 -> pin 9
+             [(83.950, 84.500), (84.500, 86.625)]],     # C2 -> C5
+    "+5V":  [[(86.500, 86.625), (86.712, 84.625)]],     # C4 -> pin 10
+    "VDDA": [[(88.500, 86.625), (88.617, 84.625)]],     # C6 -> pin 13
+    "LED_A": [[(36.788, 94.000), (46.000, 94.000), (46.000, 96.200),
+               (56.825, 96.200), (56.825, 94.000)]],    # around R1's other pad
 }
 
-# Long hauls go on B.Cu, which is otherwise empty.
+# --- long hauls on B.Cu -----------------------------------------------------
+# Anything that has to cross the board goes underneath, where the layer is empty
+# apart from VCARD's short hop. Each entry is (net, B.Cu path, vias, F.Cu stubs).
 LONG = [
-    # +5V from the USB plug, under the differential pair, up beside C1
-    ("+5V",   [(91.75, 93.85), (97.00, 93.85), (97.00, 98.00),
-               (86.10, 98.00), (86.10, 91.60)], [(86.10, 91.60)], [(86.10, 91.60), (86.10, 89.25)]),
-    # VDD out to R1 at the far left
-    ("VDD",   [(55.85, 93.00), (81.50, 93.00), (81.50, 90.00)],
-              [(55.85, 93.00), (81.50, 90.00)], [(81.50, 90.00), (83.40, 89.25)]),
-    # LED cathode back from LED1 to pin 12
-    ("LED_K", [(35.92, 91.00), (87.9675, 91.00), (87.9675, 87.20)],
-              [(35.92, 91.00), (87.9675, 87.20)], [(87.9675, 87.20), (87.9675, 84.625)]),
+    ("+5V",  [(91.800, 93.853), (91.800, 89.000), (85.500, 89.000),
+              (85.500, 81.600), (83.950, 81.600)],
+             [(85.500, 87.000), (83.950, 81.600)],
+             [[(85.500, 87.000), (86.500, 86.625)],       # via -> C4 pad 1
+              [(83.950, 81.600), (83.950, 82.300)]]),     # via -> C1 pad 1
+    ("VDD",  [(55.175, 90.800), (83.950, 90.800), (83.950, 85.500)],
+             [(55.175, 90.800), (83.950, 85.500)],
+             [[(55.175, 94.000), (55.175, 90.800)],       # R1 pad 1 -> via
+              [(83.950, 85.500), (83.950, 84.500)]]),     # via -> C2 pad 1
+    ("VDDA", [(85.200, 80.100), (86.800, 80.100), (86.800, 86.300),
+              (87.500, 86.300)],
+             [(85.200, 80.100), (87.500, 86.300)],
+             [[(83.775, 80.100), (85.200, 80.100)],       # C8 pad 1 -> via
+              [(87.500, 86.300), (88.500, 86.625)]]),     # via -> C6 pad 1
 ]
-LONG_STUBS = {
-    "VDD_R1": [(55.85, 94.00), (55.85, 93.00)],
-    "LED_K1": [(35.92, 94.00), (35.92, 91.00)],
-}
 
 
 def length(pts):
@@ -208,56 +223,23 @@ def build():
 
 
 def _signals():
-    out = path(USB_DP_PATH, "USB_DP", "F.Cu", DIFF_WIDTH)
-    out += path(USB_DM_PATH, "USB_DM", "F.Cu", DIFF_WIDTH)
+    out = path(USB_DP_PATH, "USB_DP", "F.Cu", DIFF_W)
+    out += path(USB_DM_PATH, "USB_DM", "F.Cu", DIFF_W)
     for net, pts in SD.items():
-        out += path(pts, net, "F.Cu")
-    out += path(VCARD_STUB_CARD, "VCARD", "F.Cu")
-    out += path(VCARD_BOT, "VCARD", "B.Cu")
-    out += path(VCARD_CAPS, "VCARD", "B.Cu")
-    out += path(VCARD_STUB_U1, "VCARD", "F.Cu")
+        out += path(pts, net, "F.Cu", 0.2)
+    for seg in (VCARD_F1, VCARD_F2, VCARD_F3, VCARD_F4):
+        out += path(seg, "VCARD", "F.Cu")
+    out += path(VCARD_B, "VCARD", "B.Cu")
     out += "".join(via(p, "VCARD") for p in VCARD_VIAS)
-    for net, runs in SHORT.items():
+    for net, runs in HOPS.items():
         for r in runs:
             out += path(r, net, "F.Cu")
-    for net, bot, vias, top in LONG:
+    for net, bot, vias, stubs in LONG:
         out += path(bot, net, "B.Cu")
-        out += path(top, net, "F.Cu")
         out += "".join(via(p, net) for p in vias)
-    out += path(LONG_STUBS["VDD_R1"], "VDD", "F.Cu")
-    out += path(LONG_STUBS["LED_K1"], "LED_K", "F.Cu")
+        for st in stubs:
+            out += path(st, net, "F.Cu")
     return out
-
-
-# PCBWay standard 4-layer, 1.6 mm finished. Recorded on the board so KiCad's
-# impedance tooling and any future recalculation use the real numbers rather
-# than KiCad's generic defaults.
-STACKUP = """\t\t(stackup
-\t\t\t(layer "F.SilkS" (type "Top Silk Screen"))
-\t\t\t(layer "F.Paste" (type "Top Solder Paste"))
-\t\t\t(layer "F.Mask" (type "Top Solder Mask") (thickness 0.01))
-\t\t\t(layer "F.Cu" (type "copper") (thickness 0.035))
-\t\t\t(layer "dielectric 1" (type "prepreg") (thickness 0.1855) (material "FR4") (epsilon_r 4.74) (loss_tangent 0.02))
-\t\t\t(layer "In1.Cu" (type "copper") (thickness 0.035))
-\t\t\t(layer "dielectric 2" (type "core") (thickness 1.03) (material "FR4") (epsilon_r 4.6) (loss_tangent 0.02))
-\t\t\t(layer "In2.Cu" (type "copper") (thickness 0.035))
-\t\t\t(layer "dielectric 3" (type "prepreg") (thickness 0.1855) (material "FR4") (epsilon_r 4.74) (loss_tangent 0.02))
-\t\t\t(layer "B.Cu" (type "copper") (thickness 0.035))
-\t\t\t(layer "B.Mask" (type "Bottom Solder Mask") (thickness 0.01))
-\t\t\t(layer "B.Paste" (type "Bottom Solder Paste"))
-\t\t\t(layer "B.SilkS" (type "Bottom Silk Screen"))
-\t\t\t(copper_finish "ENIG")
-\t\t\t(dielectric_constraints no)
-\t\t)
-"""
-
-
-def ensure_stackup(s):
-    if "(stackup" in s:
-        return s
-    i = s.index("\t(setup")
-    j = s.index("\n", i)
-    return s[:j + 1] + STACKUP + s[j + 1:]
 
 
 def strip_previous(s):
@@ -294,7 +276,6 @@ def main():
     s = open(PCB).read()
     before = s.count("(segment") + s.count("(via") + s.count("(zone")
     s = strip_previous(s)
-    s = ensure_stackup(s)
     i = s.rstrip().rindex(")")
     s = s[:i] + build() + s[i:]
     open(PCB, "w").write(s)
