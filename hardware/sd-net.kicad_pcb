@@ -262,9 +262,15 @@
 		)
 		(embedded_fonts no)
 		(model "${KIPRJMOD}/sd-net.3dshapes/LED-12-215SYGC.wrl"
-			(offset (xyz 0 0 0))
-			(scale (xyz 1 1 1))
-			(rotate (xyz 0 0 0))
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
 		)
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
@@ -972,9 +978,15 @@
 		)
 		(embedded_fonts no)
 		(model "${KIPRJMOD}/sd-net.3dshapes/USB-AM90.wrl"
-			(offset (xyz 0 0 0))
-			(scale (xyz 1 1 1))
-			(rotate (xyz 0 0 0))
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
 		)
 	)
 	(footprint "Capacitor_SMD:C_0805_2012Metric"
@@ -2274,9 +2286,15 @@
 		)
 		(embedded_fonts no)
 		(model "${KIPRJMOD}/sd-net.3dshapes/SD-006M.wrl"
-			(offset (xyz 0 0 0))
-			(scale (xyz 1 1 1))
-			(rotate (xyz 0 0 0))
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
 		)
 	)
 	(footprint "Capacitor_SMD:C_0805_2012Metric"
