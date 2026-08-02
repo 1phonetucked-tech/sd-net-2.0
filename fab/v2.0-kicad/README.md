@@ -1,7 +1,7 @@
 # sd - net 2.0, fabrication package
 
 Open-source USB SD card reader. **OSHWA UID US002797**, CERN-OHL-S-2.0.
-Repository: https://github.com/1phonetucked-tech/sd-net
+Repository: https://github.com/1phonetucked-tech/sd-net-2.0
 
 | | |
 |---|---|
@@ -33,9 +33,11 @@ Repository: https://github.com/1phonetucked-tech/sd-net
 radius arc across the apex and 4.85 mm fillets on the bottom two corners.
 Please confirm any profiling or CNC routing charge is included.
 
-**2, One through-hole part.** `USB1` is an AM90 right-angle USB-A **male
-plug**, 6 joints, and it is not part of standard SMT assembly. Please quote the
-hand-soldering separately. Everything else is SMT.
+**2, One through-hole part, and we do want it populated.** `USB1` is an AM90
+right-angle USB-A **male plug**, 6 joints. It falls outside standard SMT
+assembly, so please add the hand-soldering as a line item and quote it, rather
+than shipping the plug loose. Every board should arrive with `USB1` fitted.
+Everything else is SMT.
 
 **3, Two plated slots.** `USB1` MH1/MH2 are **0.90 × 2.25 mm plated slots**,
 not round holes. They take the plug's shell tabs and carry the mechanical load,
