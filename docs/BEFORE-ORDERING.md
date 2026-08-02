@@ -7,6 +7,20 @@ None of that is the same as knowing it works. Rev 1.5 also passed every check
 its tools could run, and it never enumerated. What follows is everything that is
 still assumption rather than fact, and what it would cost to close each one.
 
+**Status as of 2026-08-02.** Of the five items below, three have moved:
+
+| | |
+|---|---|
+| 1 — VDD/VDDA | ✅ **closed**, measured 3.38 V on hardware |
+| 2 — 90 Ω pair | downgraded: the pair is 10 mm, electrically too short to care |
+| 3 — footprints | ✅ **fixed**, four errors found against the datasheets and corrected |
+| 4 — nothing has ever run | open, and irreducible until boards exist |
+| 5 — mechanical | improved: the AM90's shell tabs now have real slots. Still 75 mm of overhang. |
+
+The largest remaining risk is no longer a design question. It is **assembly** —
+U1's rotation, LED1's polarity, and the hand-soldered through-hole plug. Ask
+PCBWay for a photo of the first assembled board before they run the rest.
+
 ## Order a small batch first
 
 **Five boards, not thirty.** Prove one enumerates before committing to the
@@ -17,7 +31,7 @@ discover on thirty. It is also a better sponsorship pitch — approaching PCBWay
 with a board you can demonstrate is a different conversation from asking them to
 fund a hypothesis.
 
-## Open item 1 — VDD/VDDA was reasoned, never measured
+## ✅ Closed item 1 — VDD/VDDA: measured 2026-08-02, **3.38 V**
 
 `docs/POWER-DESIGN.md` argues that VDD (pin 9) and VDDA (pin 13) are outputs of
 the GL823K's internal regulator, and that decoupling them separately without an
@@ -25,22 +39,27 @@ external link is correct whether or not they share an internal node. The
 reasoning holds, and the datasheet supports it: §5.2/§5.3 list 5 V as the only
 supply, §4.6 describes the on-chip 5 V→3.3 V band-gap regulator.
 
-**It was never confirmed on hardware.** No second-source schematic was
-obtainable — every route was blocked, see the dead-end table in
-`POWER-DESIGN.md`.
+**It has now been confirmed on hardware.** A rev 1.5 board was powered from a
+5 V phone charger — VBUS measured 5.17 V, inside Table 5.2's 4.75–5.25 V — and
+the shorted pin-8/9/13 node read **3.38 V** against ground.
 
-**The test, on a rev 1.5 board, costs nothing:**
+Nothing external feeds that node. VBUS is the only supply on the board and it
+lands on pin 10 alone, so 3.38 V can only come from inside the chip. The
+on-chip regulator is real, it runs, and it drives those pins. **VDD and VDDA
+are outputs; no external 3.3 V rail is required.**
 
-1. Plug a rev 1.5 board into USB.
-2. Measure `U1` pin 9 against `U1` pin 14 (VSS).
+Probing is easier than it sounds: rev 1.5's short puts that node on all six
+decoupling caps, so any cap terminal works and you never have to touch a
+0.635 mm SSOP lead. Ground on `USB1` pin 4 — *not* the USB shell, which floats
+on rev 1.5.
 
-| Reading | Meaning |
-|---|---|
-| ~3.3 V | The internal regulator is running. VDD/VDDA are outputs. Design is right. |
-| 0 V | The reading behind the whole rev 2.0 power topology is wrong. **Stop and reassess.** |
+This was the assumption that could have killed the whole run, and it cost a
+phone charger and a five-dollar meter. Full write-up in `POWER-DESIGN.md`.
 
-Rev 1.5 shorts pins 8, 9 and 13 together, so this measures the combined node —
-which is exactly what makes the test easy.
+⚠️ If you repeat it, check the meter first. The first attempt read 23 % high
+with a drifting reference and a lit low-battery icon — it reported a fresh AA
+as 1.91 V and VBUS as 6.29 V. A fresh AA should read 1.5–1.6 V. Verify that
+before believing anything else the meter tells you.
 
 ## Open item 2 — the 90 Ω pair is calculated, not field-solved
 
@@ -57,6 +76,15 @@ against real dielectric numbers.
 is already flagged in the fab package README. If they want a different width or
 gap, note the pair threads a 1.475 mm corridor between C6's pad and U1's pads
 with only 0.265 mm either side — **C6 has to move before the pair can widen.**
+
+**Downgrade this one, though.** The routed pair was measured on 2026-08-02:
+**D+ 10.11 mm, D− 9.50 mm**, both entirely on F.Cu. At roughly 6.25 ps/mm that
+is ~63 ps of flight time against USB 2.0's 500 ps rise time — below the ~83 ps
+at which a trace starts behaving as a transmission line at all. Even the
+original 105.9 Ω geometry would very likely have worked over a run this short.
+The 0.61 mm length mismatch is ~4 ps of intra-pair skew, which is nothing.
+
+Still worth asking PCBWay, because it is free. But this is not a gate.
 
 ## Open item 3 — the footprints came from a board that never worked
 

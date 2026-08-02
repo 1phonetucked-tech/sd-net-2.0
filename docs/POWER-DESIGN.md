@@ -93,6 +93,32 @@ There is also nothing to debate about *sourcing* them: this board has no externa
 supply and the chip's only rated input is 5 V, so VDD and VDDA are internally generated
 either way.
 
+### ✅ Confirmed on hardware, 2026-08-02 — **3.38 V**
+
+The above was reasoning. It has now been measured.
+
+A rev 1.5 board was powered from a 5 V phone charger (VBUS confirmed at 5.17 V, inside the
+4.75–5.25 V of Table 5.2) and the shorted pin-8/9/13 node read **3.38 V** against ground.
+
+Nothing external feeds that node. VBUS is the board's only supply and it lands on pin 10
+alone. So the 3.38 V can only be produced inside the chip — **the on-chip 5 V→3.3 V band-gap
+regulator of §4.6 is real, it runs, and it drives these pins.** 3.38 V is also within the
+±3 % you would expect of a band-gap part, so it is regulating, not merely leaking.
+
+**VDD and VDDA are outputs. Nothing external needs to supply 3.3 V.** The rev 2.0 topology —
+5 V in, VDD and VDDA decoupled separately at their own pins, no external link — is correct,
+and is no longer an assumption.
+
+One limit worth stating: rev 1.5 shorts pins 8, 9 and 13 together, so this measures the
+combined node. It proves the node is driven; it does not say which of the three pins sources
+it. That distinction does not affect any decision here — the design question was only ever
+whether an external 3.3 V rail is required, and it is not.
+
+Measured with a DT-830-class meter. ⚠️ Its first readings were ~23 % high with an unstable
+reference; the low-battery icon was lit. Every number above was taken after fitting a fresh
+9 V and re-checking against a known cell and the charger. If you repeat this, sanity-check
+the meter on a fresh AA (1.5–1.6 V) before trusting anything it says.
+
 ### Second-source search — what was actually checked (2026-07-31)
 
 No verified second-source schematic was obtained. Every accessible route was blocked:
