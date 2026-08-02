@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Generate the three KiCad footprints this project needs and KiCad does not ship.
 
-KiCad has no full-size SD socket footprint, no board-mounted USB-A male plug, and
-no land for a 2.0 x 1.0 mm chip LED. All three are defined here.
+KiCad ships no footprint matching any of the three parts on this board. It does
+carry six full-size SD sockets, but none match the SD-006M's contact count or
+mounting; it has USB-A receptacles rather than a board-mounted male plug; and an
+0804 LED is outside the metric chip series. All three are defined here.
 
 Every dimension below is taken from the manufacturer's recommended land pattern:
 
