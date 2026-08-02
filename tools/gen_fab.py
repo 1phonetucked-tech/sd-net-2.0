@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build the rev 2.0 fabrication package.
 
-Produces everything PCBWay needs to quote and build the board, in the shape
+produces everything PCBWay needs to quote and build the board, in the shape
 they expect it: **Gerbers and drill files zipped together**, with the BOM and
 pick-and-place alongside as loose CSVs.
 
@@ -9,14 +9,14 @@ pick-and-place alongside as loose CSVs.
     ./tools/gen_fab.py EXTRA_DIR ...        # also copy the package to EXTRA_DIR
 
 Gerber conventions chosen deliberately:
-  * Protel extensions (.GTL/.GBL/...) rather than .gbr. Every fab reads both;
+  * protel extensions (.GTL/.GBL/...) rather than .gbr. Every fab reads both;
     Protel is what PCBWay's own documentation shows.
-  * X2 attributes left ON. They carry net and pad function metadata, which is
+  * x2 attributes left ON. They carry net and pad function metadata, which is
     what lets a fab's DFM tooling tell a via from a pad.
-  * Soldermask subtracted from silkscreen, so legend never prints onto bare
+  * soldermask subtracted from silkscreen, so legend never prints onto bare
     copper.
-  * Absolute origin for both Gerbers and drill, so the two always agree.
-  * PTH and NPTH in separate files -- this board has NPTH that matters (the
+  * absolute origin for both Gerbers and drill, so the two always agree.
+  * PTH and NPTH in separate files > board has NPTH that matters (the
     connector locating pegs), and merging them invites a fab to plate holes
     that must not be plated.
 """
@@ -42,7 +42,7 @@ BOM_LABELS = "Designator,Value,Footprint,MPN,Manufacturer,LCSC Part #,Quantity"
 
 README = """# sd - net 2.0, fabrication package
 
-Open-source USB SD card reader. **OSHWA UID US002797**, CERN-OHL-S-2.0.
+open-source USB SD card reader. **OSHWA UID US002797**, CERN-OHL-S-2.0.
 Repository: https://github.com/1phonetucked-tech/sd-net
 
 | | |
