@@ -154,7 +154,7 @@
 		(layer "F.Cu")
 		(uuid "19cc13c9-71f5-4c57-a0cd-d427b265cfc6")
 		(at 36 94)
-		(descr "Everlight 12-215SYGC/S530-E2/TR8 yellow-green chip LED, 2.0 x 1.0 mm body (LCSC C131283). Pad geometry derived from the fabricated sd - net rev 1.5 board. Pad 1 is the cathode. Do NOT substitute a stock 0603 land: the terminals sit 0.60-1.00 mm out from the centre, which a 1.6 mm land does not reach properly.")
+		(descr "Everlight 12-215SYGC/S530-E2/TR8 yellow-green chip LED, 2.0 x 1.0 mm body (LCSC C131283). Pad 1 is the cathode. Do NOT substitute a stock 0603 land: the terminals sit 0.60-1.00 mm out from the centre, which a 1.6 mm land does not reach properly.")
 		(tags "led chip yellow-green")
 		(property "Reference" "LED1"
 			(at 4 -1.5 0)
@@ -826,7 +826,7 @@
 		(layer "F.Cu")
 		(uuid "75be0484-5951-4165-93fd-e10f3f34c8fd")
 		(at 88.3 94.854)
-		(descr "USB 2.0 type-A male plug, right angle, through hole (LCSC C404965). Pad geometry derived from the fabricated sd - net rev 1.5 board.")
+		(descr "USB 2.0 type-A male plug, right angle, through hole (LCSC C404965). Geometry from Shou Han drawing A/0. MH1/MH2 are plated slots for the shell tabs, not mounting posts.")
 		(tags "usb type-a plug right-angle tht")
 		(property "Reference" "USB1"
 			(at -6.3 -3.354 0)
@@ -2099,7 +2099,7 @@
 		(layer "F.Cu")
 		(uuid "d4de360e-bff3-4f9f-b38a-e1fc7c592213")
 		(at 88.3 60.901 180)
-		(descr "Full-size SD card socket, push-push, 11 contacts + 2 shell tabs (LCSC C125615). Pad geometry derived from the fabricated sd - net rev 1.5 board.")
+		(descr "Full-size SD card socket, push-push, 11 contacts + 2 shell tabs (LCSC C125615). Geometry from the SOFNG datasheet land pattern.")
 		(tags "sd card socket push-push")
 		(property "Reference" "CARD1"
 			(at -13.2 -14.599 0)

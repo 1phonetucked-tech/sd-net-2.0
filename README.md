@@ -1,88 +1,93 @@
+<img src="branding/oshwa_mark/oshw_gear_black.png" width="76" align="right" alt="Open source hardware">
+
 # sd - net 2.0
 
-An open-source, full-size **USB SD card reader** on a single chip. USB-A plug on
-one end, full-size SD socket on the other, and not much in between: the whole
-board is 13 placements across 7 line items.
+A full-size USB SD card reader on a single chip. USB-A plug at one end, full-size
+SD socket at the other, 13 placements across 7 line items in between.
 
-[![OSHWA certified](https://img.shields.io/badge/OSHWA-US002797-blue)](https://certification.oshwa.org/us002797.html)
-[![License](https://img.shields.io/badge/license-CERN--OHL--S--2.0-green)](https://cern-ohl.web.cern.ch/)
+[![OSHWA US002797](https://img.shields.io/badge/OSHWA-US002797-blue)](https://certification.oshwa.org/us002797.html)
+[![CERN-OHL-S-2.0](https://img.shields.io/badge/license-CERN--OHL--S--2.0-green)](LICENSE)
 
 | | |
 |---|---|
-| Controller | Genesys Logic **GL823K** (SSOP-16, LCSC C284879) |
-| Board | 116.12 x 64.98 mm, 4 layers, 1.6 mm, ENIG, black mask, white legend |
-| Placements | 13 (12 SMT, 1 through-hole) |
+| Controller | Genesys Logic GL823K, SSOP-16, LCSC C284879 |
+| Board | 116.12 × 64.98 mm, 4 layers, 1.6 mm, ENIG |
+| Finish | black soldermask, white legend |
+| Placements | 13, of which 12 SMT and 1 through-hole |
+| Interface | USB 2.0 high speed, SD 4-bit mode |
 | Licence | CERN-OHL-S-2.0 |
-| OSHWA UID | **US002797** |
 
-Boards are **given away, not sold**.
+Boards are given away, not sold.
+
+## Specification
+
+**Supply.** One external rail. The GL823K's only rated input is 5 V from VBUS;
+VDD and VDDA are outputs of an on-chip band-gap regulator and carry decoupling
+only, never an external feed. Card power is a separate switched net driven from
+the controller's current-limited output, with its bulk capacitance at the
+socket so card inrush never reaches the USB PHY rail. Four nets, eight
+capacitors, no external regulator. See `docs/POWER-DESIGN.md`.
+
+**Land patterns.** KiCad ships no footprint for a full-size SD socket, a
+board-mounted USB-A male plug, or a 2.0 × 1.0 mm chip LED, so all three are
+generated from the manufacturers' recommended land patterns and recorded
+dimension by dimension in `docs/LAND-PATTERNS.md`. The USB plug's shell tabs sit
+in correctly sized plated slots, which is what anchors a board that cantilevers
+out of a host port.
+
+**Outline.** An isosceles triangle, symmetric about the axis the apex arc and
+all three connectors sit on. Both sides 70.175 mm at 48.007 degrees, with the
+diagonals constructed as true tangents to the corner fillets.
+
+**No external clock.** The controller has an on-chip clock source, so no 12 MHz
+crystal is required.
+
+**No card detect.** By design. The controller detects cards by polling the SD
+bus, which is why the socket's mechanical CD and WP contacts terminate nowhere.
 
 ## Status
 
-**Rev 2.0 is complete and verified as far as software and a bench meter can take
-it, but it has never been fabricated.** DRC is clean at 0 violations and 0
-unconnected, the netlist checks against intent, and the power topology has been
-confirmed on hardware. It has not yet been built.
+The design is DRC clean at 0 violations and 0 unconnected, its netlist is
+checked against intent, and the supply topology is confirmed on hardware at
+3.38 V.
 
-Rev 1.5 was fabricated in June 2026 and **never worked**. That failure is now
-fully diagnosed, reproduced on the bench, and fixed.
+**It has not been fabricated.** `docs/STATUS.md` lists what is verified, what is
+not, and the checks to run on first articles. Read it before ordering.
 
-## What went wrong in rev 1.5, and what 2.0 does about it
-
-Rev 1.5 shorted the GL823K's card-power switch output (pin 8) to its own 3.3 V
-rail (pins 9 and 13), putting all six decoupling capacitors on one node, and
-left the 5 V input with no decoupling at all.
-
-Measured on the bench, the prototypes never reach the USB bus, with or without a
-card in the slot. The 3.3 V rail cycles **3.3 V, down to 2.5 V, back up**: a
-brownout and reset loop rather than a sag. The host attempts enumeration, the
-PHY switches on, the current steps, and the rail collapses.
-
-Rev 2.0 splits that single net into four, **+5V, VDD, VDDA and VCARD**, each
-decoupled at its own pin, with card power restored to the chip's current-limited
-switch. Full reasoning and measurements in
-[`docs/POWER-DESIGN.md`](docs/POWER-DESIGN.md).
-
-Four footprint errors were also found by measuring the land patterns against the
-manufacturers' own drawings, and corrected. Among them an SD contact row 0.55 mm
-out of position, and a USB plug whose locating pegs were an interference fit.
-See [`docs/FOOTPRINT-AUDIT.md`](docs/FOOTPRINT-AUDIT.md).
-
-## Repository layout
+## Layout
 
 | Path | |
 |---|---|
 | `hardware/` | KiCad 10 project: schematic, PCB, footprints, 3D models |
-| `fab/v2.0-kicad/` | Fabrication package: Gerbers, drill, BOM, pick-and-place |
-| `fab/v1.5-easyeda/` | Frozen rev 1.5 outputs. Reference only, do not edit |
-| `docs/` | Design notes, measurements, manufacturing decisions |
-| `tools/` | Generators and checkers, all runnable standalone |
-| `branding/` | OSHW mark and project artwork |
+| `fab/v2.0-kicad/` | Gerbers, drill, BOM, pick-and-place, assembly drawing |
+| `docs/` | Power design, land patterns, status, controller datasheet |
+| `tools/` | Generators and checks |
+| `branding/` | OSHW mark and the KiCad colour theme used for the schematic PDF |
 
-## Building it
+## Building
 
-The fabrication package in `fab/v2.0-kicad/` is ready to upload. Regenerate with:
-
-```sh
-./tools/gen_fab.py                    # -> fab/v2.0-kicad/
-```
-
-Other generators:
+The package in `fab/v2.0-kicad/` uploads as-is. Its `README.md` states the
+stackup, the plated slots, the non-plated holes and the impedance target for the
+fab. To regenerate:
 
 ```sh
-./tools/gen_footprints.py   # footprints, corrected against datasheets
-./tools/gen_3dmodels.py     # 3D models KiCad has none of
-./tools/verify_netlist.py   # netlist vs intent
+./tools/gen_fab.py                    # fabrication package
+./tools/gen_footprints.py             # footprints
+./tools/gen_3dmodels.py               # 3D models
+./tools/verify_netlist.py             # netlist against intent
 ```
 
-## Read before spending money
+`gen_pcb.py`, `gen_schematic.py` and `route.py` are one-time bootstrappers.
+Running them overwrites the routed board.
 
-**[`docs/BEFORE-ORDERING.md`](docs/BEFORE-ORDERING.md)** lists everything still
-assumption rather than fact, and what each would cost to close. Nothing in this
-design has run yet, and the largest remaining risk is assembly orientation
-rather than anything in the design itself.
+Do not run `Tools → Update Footprints from Library` in the PCB editor. KiCad
+stores pad angles absolutely, `U1` sits at 270 degrees, and updating from the
+library strips those angles and shorts the part. `docs/LAND-PATTERNS.md`
+explains it.
 
-## Credits
+## Licence
 
-Created by **1PhoneTucked**. Licensed CERN-OHL-S-2.0: if you make and distribute
-a variant, the design files for it have to be shared under the same terms.
+CERN-OHL-S-2.0. Distribute a variant and its design files must be shared under
+the same terms.
+
+Created by 1PhoneTucked.
