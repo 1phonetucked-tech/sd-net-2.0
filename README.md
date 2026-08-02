@@ -1,60 +1,49 @@
-<img src="branding/oshwa_mark/oshw_gear_black.png" width="76" align="right" alt="Open source hardware">
-
 # sd - net 2.0
 
-A full-size USB SD card reader on a single chip. USB-A plug at one end, full-size
-SD socket at the other, 13 placements across 7 line items in between.
+full-size USB SD card reader > USB-A plug for end user connect > 13 placements across 7 line items in between.
 
 [![OSHWA US002797](https://img.shields.io/badge/OSHWA-US002797-blue)](https://certification.oshwa.org/us002797.html)
 [![CERN-OHL-S-2.0](https://img.shields.io/badge/license-CERN--OHL--S--2.0-green)](LICENSE)
 
 | | |
 |---|---|
-| Controller | Genesys Logic GL823K, SSOP-16, LCSC C284879 |
-| Board | 116.12 × 64.98 mm, 4 layers, 1.6 mm, ENIG |
-| Finish | black soldermask, white legend |
-| Placements | 13, of which 12 SMT and 1 through-hole |
-| Interface | USB 2.0 high speed, SD 4-bit mode |
-| Licence | CERN-OHL-S-2.0 |
+| controller | Genesys Logic GL823K, SSOP-16, LCSC C284879 |
+| board | 116.12 × 64.98 mm, 4 layers, 1.6 mm, ENIG |
+| finish | black soldermask, white legend |
+| placements | 13, of which 12 SMT and 1 through-hole |
+| interface | USB 2.0 high speed, SD 4-bit mode |
 
-Boards are given away, not sold.
+boards are exclusively given away > not sold.
 
-## Specification
+## specifications
 
-**Supply.** One external rail. The GL823K's only rated input is 5 V from VBUS;
-VDD and VDDA are outputs of an on-chip band-gap regulator and carry decoupling
-only, never an external feed. Card power is a separate switched net driven from
-the controller's current-limited output, with its bulk capacitance at the
-socket so card inrush never reaches the USB PHY rail. Four nets, eight
-capacitors, no external regulator. See `docs/POWER-DESIGN.md`.
+**supply**
+1 external rail. GL823K's only rated input is 5 V from VBUS (multimeter tested). VDD and VDDA are outputs of an on-chip band-gap regulator and carry decoupling only > never an external feed. card power is a separate switched net driven from the controller's current-limited output, with its bulk capacitance at the socket so card inrush never reaches the USB PHY rail. **four nets > eight capacitors > no external regulator** 
+review "docs/POWER-DESIGN.md"
 
-**Land patterns.** KiCad ships no footprint for a full-size SD socket, a
-board-mounted USB-A male plug, or a 2.0 × 1.0 mm chip LED, so all three are
-generated from the manufacturers' recommended land patterns and recorded
-dimension by dimension in `docs/LAND-PATTERNS.md`. The USB plug's shell tabs sit
-in correctly sized plated slots, which is what anchors a board that cantilevers
-out of a host port.
+**land patterns** 
+KiCad ships no footprint matching any of the three parts on this board > SD-006M (SD slot) > AM90 (USB) > Everlight 12-215SYGC/S530-E2/TR8 (LED). i opted out of pulling them from easyeda2kicad and generated them from the manufacturers' recommended land patterns instead > dimension by dimension > 3D models the same way. every value is recorded in "docs/LAND-PATTERNS.md" the USB plug's shell tabs sit in correctly sized plated slots rather than
+oversized round holes > those tabs are the only thing anchoring a board that cantilevers roughly 75 mm out of a host port
 
-**Outline.** An isosceles triangle, symmetric about the axis the apex arc and
-all three connectors sit on. Both sides 70.175 mm at 48.007 degrees, with the
-diagonals constructed as true tangents to the corner fillets.
+**outline**
+isosceles triangle > symmetric about the axis the apex arc and all three connectors sit on > both sides 70.175 mm at 48.007 degrees, with the diagonals constructed as true tangents to the corner fillets
 
-**No external clock.** The controller has an on-chip clock source, so no 12 MHz
-crystal is required.
+**no external clock**
+controller (GL823K-HCY04) has an on-chip clock source > 12 MHz crystal is not required.
 
-**No card detect.** By design. The controller detects cards by polling the SD
-bus, which is why the socket's mechanical CD and WP contacts terminate nowhere.
+**no card detect**
+by design. controller detects cards by polling the SD bus, which is why the socket's mechanical CD and WP are no connect
 
-## Status
+## currently
+design is DRC clean.
+0 violations and 0 unconnected
+netlist is checked against intent > supply topology is confirmed on hardware at 3.38 V
 
-The design is DRC clean at 0 violations and 0 unconnected, its netlist is
-checked against intent, and the supply topology is confirmed on hardware at
-3.38 V.
+**rev 2.0 has not been fabricated (yet)** 
+"docs/STATUS.md" lists what is verified > what is not > and the checks to run on first articles.
+review before ordering
 
-**It has not been fabricated.** `docs/STATUS.md` lists what is verified, what is
-not, and the checks to run on first articles. Read it before ordering.
-
-## Layout
+## layout
 
 | Path | |
 |---|---|
@@ -64,9 +53,8 @@ not, and the checks to run on first articles. Read it before ordering.
 | `tools/` | Generators and checks |
 | `branding/` | OSHW mark and the KiCad colour theme used for the schematic PDF |
 
-## Building
-
-The package in `fab/v2.0-kicad/` uploads as-is. Its `README.md` states the
+## building
+the package in `fab/v2.0-kicad/` uploads as-is. Its `README.md` states the
 stackup, the plated slots, the non-plated holes and the impedance target for the
 fab. To regenerate:
 
@@ -77,17 +65,14 @@ fab. To regenerate:
 ./tools/verify_netlist.py             # netlist against intent
 ```
 
-`gen_pcb.py`, `gen_schematic.py` and `route.py` are one-time bootstrappers.
-Running them overwrites the routed board.
+"gen_schematic.py" and "gen_pcb.py" built the original KiCad files > kept as a record only > running either overwrites the current board
 
-Do not run `Tools → Update Footprints from Library` in the PCB editor. KiCad
-stores pad angles absolutely, `U1` sits at 270 degrees, and updating from the
-library strips those angles and shorts the part. `docs/LAND-PATTERNS.md`
-explains it.
+**do not run "Tools → Update Footprints from Library" in the PCB editor. KiCad
+stores pad angles absolutely & "U1" sits at 270 degrees > updating from the library strips those angles and shorts the part
+*also explained on "docs/LAND-PATTERNS.md*"**
 
-## Licence
-
+## licence
 CERN-OHL-S-2.0. Distribute a variant and its design files must be shared under
 the same terms.
 
-Created by 1PhoneTucked.
+created by (1)PhoneTucked.
