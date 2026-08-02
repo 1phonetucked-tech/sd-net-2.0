@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
-"""Derive KiCad footprints for SD-006M and USB-AM90 from the rev 1.5 board.
+"""Derive KiCad footprints for SD-006M, USB-AM90 and LED1 from the rev 1.5 board.
 
-KiCad has no stock footprint for either part. Rather than draw them by hand
-against a datasheet, take the pad geometry straight out of the Altium ASCII
-export of the board that was actually fabricated — those pads are known to
-match the physical parts, because boards were built with them.
+KiCad has no stock footprint for any of these parts. Rather than draw them by
+hand against a datasheet, take the pad geometry straight out of the Altium ASCII
+export of the board that was actually fabricated.
+
+The original reasoning was that those pads are known to match the physical
+parts, because boards were built with them. That reasoning is weaker than it
+looks: rev 1.5 never enumerated, so nothing about it was ever really proven, and
+an audit against the manufacturers' own recommended land patterns found three
+places where rev 1.5's library is wrong. Those are corrected here, via NPTH and
+PAD_FIXES below — the rev 1.5 export is the starting point, not the authority.
 
 Coordinate frames, since three conventions collide here:
   * Altium pad coordinates are absolute, in mils, Y-up.
@@ -95,9 +101,68 @@ def extract(ref):
 #         origin (68.199, 54.610), rotation 180
 #
 # Without these neither connector seats on the board.
+#
+# CORRECTION, USB-AM90 (Shou Han drawing A/0, 2018.07.10): the peg holes belong
+# 2.00 mm from the pin row, on the same line as the shell tabs. Rev 1.5 drilled
+# them at 2.175 -- pins at board Y 26.146, pegs at 23.971. The peg is 0.85 mm in
+# a 1.00 mm hole, so there is 0.05-0.075 mm of radial clearance and a 0.175 mm
+# error is an interference fit: the pegs bind and the plug does not seat flat.
+# Corrected to y = 1.0008, matching MH1/MH2. Nothing routes to NPTH, so this
+# costs no copper.
 NPTH = {
-    "USB-AM90": [(2.250, 1.175, 1.0), (-2.250, 1.175, 1.0)],
+    "USB-AM90": [(2.250, 1.0008, 1.0), (-2.250, 1.0008, 1.0)],
     "SD-006M": [(12.100, 13.076, 1.6), (-12.100, 13.076, 1.6)],
+}
+
+# Overrides applied to pads taken from the rev 1.5 export, keyed by footprint
+# then pad name. Each entry may set x/y/w/h and "slot" (a plated oval opening,
+# width x height) in place of the extracted round drill.
+#
+# USB-AM90 MH1/MH2: the AM90 has no mounting posts. Its shell ends in two flat
+# tabs that the datasheet wants in 0.86 x 2.20 mm slots at +/-5.855. Rev 1.5
+# put 2.601 mm round holes at +/-6.0 instead -- a tab rattling in a hole three
+# times its width, with solder asked to bridge ~0.9 mm on each side. Those tabs
+# are the only thing anchoring a board that cantilevers ~75 mm out of a USB
+# port, so the joint is worth getting right. Slots are opened 0.04 mm over the
+# recommended 0.86 x 2.20 to leave room for hole plating.
+
+# SD-006M contacts belong 24.60 mm from the mounting pegs, which sit at
+# y = +13.076 in this frame. Rev 1.5 has them at 24.05. The pegs locate the
+# socket, so a 0.55 mm error puts the real part's tails ~78% onto the pads --
+# marginal rather than fatal, which is why nothing ever caught it.
+_SD_CONTACT_Y = round(13.076 - 24.60, 4)
+_SD_CONTACTS = "1 2 3 4 5 6 7 8 9 CD WP".split()
+
+PAD_FIXES = {
+    # Nine of the eleven SD contact X positions already match the datasheet to
+    # under 2 um. The two that do not are CD and WP -- the only two contacts
+    # this design leaves unconnected, which is its own small piece of evidence
+    # about how rev 1.5's library was drawn. Pad 12 (the right-hand shell tab)
+    # was drawn as a mirror of pad 13; the real part is not symmetric there.
+    # Pad 12's position has no printed dimension on the drawing and was
+    # measured off it, so it is the least certain number here -- but our pad is
+    # 2.00 mm wide against a 1.70 mm land, so at the corrected centre it covers
+    # the specified land completely either way.
+    "SD-006M": {
+        **{n: {"y": _SD_CONTACT_Y} for n in _SD_CONTACTS},
+        "CD": {"y": _SD_CONTACT_Y, "x": 2.8486},
+        "WP": {"y": _SD_CONTACT_Y, "x": -13.1014},
+        "12": {"x": 14.582},
+    },
+    "USB-AM90": {
+        "MH1": {"x": 5.855, "w": 1.70, "h": 3.05, "slot": (0.90, 2.25)},
+        "MH2": {"x": -5.855, "w": 1.70, "h": 3.05, "slot": (0.90, 2.25)},
+    },
+    # Rev 1.5 placed the two LED terminals 2.6 um apart in Y and 2.6 um apart
+    # in |X|. That is EasyEDA placement noise on a symmetric chip part, not
+    # geometry worth preserving, so square it up. Pad 1 is the cathode (rev 1.5
+    # netlist: LED1.1 -> U1.12 open drain, LED1.2 -> R1), which matches KiCad's
+    # Device:LED symbol. Cathode is put on -x to match how rev 2.0 already
+    # placed and routed LED1.
+    "LED-12-215SYGC": {
+        "1": {"x": -1.0503, "y": 0.0},
+        "2": {"x": 1.0503, "y": 0.0},
+    },
 }
 
 
@@ -111,6 +176,14 @@ def npth_sexp(x, y, d):
 
 
 def pad_sexp(p):
+    if p.get("slot"):
+        sw, sh = p["slot"]
+        return (f'\t(pad "{p["name"]}" thru_hole oval\n'
+                f'\t\t(at {p["x"]} {p["y"]})\n'
+                f'\t\t(size {p["w"]} {p["h"]})\n'
+                f'\t\t(drill oval {sw} {sh})\n'
+                f'\t\t(layers "*.Cu" "*.Mask")\n'
+                f'\t)\n')
     if p["drill"] > 0:
         shape = "circle" if p["shape"] == "ROUND" else "rect"
         return (f'\t(pad "{p["name"]}" thru_hole {shape}\n'
@@ -141,8 +214,24 @@ def courtyard(pads, margin=0.5):
     return out, (x0, y0, x1, y1)
 
 
-def build(name, ref, descr, tags):
+def cathode_silk(pads, margin=0.35, half=0.65, width=0.12):
+    """A silkscreen bar just outside pad 1, marking the cathode.
+
+    Chip LEDs arrive on tape with no legible marking of their own once placed,
+    so the board has to say which end is which or assembly is guessing.
+    """
+    k = next(p for p in pads if p["name"] == "1")
+    x = k["x"] + math.copysign(k["w"] / 2 + margin, k["x"])
+    return (f'\t(fp_line\n\t\t(start {x:.4f} {-half})\n\t\t(end {x:.4f} {half})\n'
+            f'\t\t(stroke (width {width}) (type solid))\n'
+            f'\t\t(layer "F.SilkS")\n\t)\n')
+
+
+def build(name, ref, descr, tags, silk=None):
     rot, pads = extract(ref)
+    for pad_name, fix in PAD_FIXES.get(name, {}).items():
+        pad = next(p for p in pads if p["name"] == pad_name)
+        pad.update(fix)
     holes = NPTH.get(name, [])
     # Mounting holes count toward the courtyard extent.
     body, (x0, y0, x1, y1) = courtyard(
@@ -159,6 +248,7 @@ def build(name, ref, descr, tags):
           f'\t(property "Value" "{name}"\n\t\t(at 0 {y1 + 1:.3f} 0)\n'
           f'\t\t(layer "F.Fab")\n\t\t(effects (font (size 1 1) (thickness 0.15)))\n\t)\n'
           + body
+          + (silk(pads) if silk else "")
           + "".join(pad_sexp(p) for p in pads)
           + "".join(npth_sexp(*h) for h in holes)
           + "\t(embedded_fonts no)\n)\n")
@@ -179,6 +269,14 @@ def main():
           "(LCSC C125615). Pad geometry derived from the fabricated sd - net "
           "rev 1.5 board.",
           "sd card socket push-push")
+    build("LED-12-215SYGC", "LED1",
+          "Everlight 12-215SYGC/S530-E2/TR8 yellow-green chip LED, 2.0 x 1.0 mm "
+          "body (LCSC C131283). Pad geometry derived from the fabricated sd - "
+          "net rev 1.5 board. Pad 1 is the cathode. Do NOT substitute a stock "
+          "0603 land: the terminals sit 0.60-1.00 mm out from the centre, which "
+          "a 1.6 mm land does not reach properly.",
+          "led chip yellow-green",
+          silk=cathode_silk)
 
     tbl = ('(fp_lib_table\n  (version 7)\n'
            '  (lib (name "sd-net")(type "KiCad")'

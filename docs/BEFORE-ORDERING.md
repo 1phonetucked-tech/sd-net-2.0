@@ -66,10 +66,31 @@ they match rev 1.5 exactly. It does **not** guarantee rev 1.5 was right — a
 footprint error would have been masked by the power defect that stopped anything
 from working.
 
-Partial reassurance: the netlist audit in `REV1.5-BASELINE.md` confirms all nine
-SD contacts map to the correct GL823K pins, and both USB data lines are on the
-right pins. So the *pinout* is right. What is unverified is the *physical* pad
-geometry — whether the socket and plug actually seat.
+**That worry was justified.** Both footprints have since been measured against
+the manufacturers' own recommended land patterns — full numbers and method in
+`docs/FOOTPRINT-AUDIT.md`. Four errors were found, and all four are now fixed.
+
+| Part | Finding | Status |
+|---|---|---|
+| SD-006M | Contact row sat 24.05 mm from the mounting pegs; datasheet says 24.60 | fixed |
+| USB-AM90 | Peg holes 0.175 mm out of position — an interference fit against 0.05–0.075 mm of clearance | fixed |
+| USB-AM90 | Shell tabs given Ø2.6 round holes instead of 0.86 × 2.20 slots | fixed |
+| LED1 | Rev 2.0 had put a stock 0603 land under a 2.0 × 1.0 mm part | fixed |
+
+The SD socket one was the one that mattered: the pegs locate the part, so the
+real socket's tails were landing ~0.55 mm off the pads — roughly 78 % overlap on
+a 2.0 mm tail. It would probably still have reflowed, which is exactly why rev
+1.5 would never have shown it.
+
+**This does not make the footprints proven.** It makes them *drawn correctly*.
+Whether the parts seat is still a physical question, and the answer is still
+unknown until boards exist.
+
+Reassurance on what was *not* wrong: the netlist audit in `REV1.5-BASELINE.md`
+confirms all nine SD contacts map to the correct GL823K pins, and both USB data
+lines are on the right pins. The pinout is right. Nine of the eleven SD contact
+X positions match the datasheet to under 2 µm; the two that don't are CD and WP,
+the only two this design leaves unconnected.
 
 Note that the NPTH mounting holes for both connectors were **missing** from the
 first cut of these footprints and had to be recovered from the drill file. That
@@ -84,7 +105,7 @@ hardware.
 
 ## Open item 5 — mechanical: 114 mm cantilevered off a USB plug
 
-The board is **113.85 × 60.29 mm** hanging off a single USB-A plug — roughly
+The board is **113.85 × 74.56 mm** hanging off a single USB-A plug — roughly
 75 mm of overhang once inserted. A knock puts real leverage on both the AM90's
 solder joints and the host's USB port.
 
@@ -92,8 +113,14 @@ This is inherited from rev 1.5, not introduced by any rev 2.0 change, and it has
 never been examined. It matters more than usual here because these boards are
 being handed to other people and going into their laptops.
 
-The AM90's two 2.6 mm through-hole mounting posts are what carry that load,
-which is the main argument for keeping it over any surface-mount alternative.
+**The AM90 has no mounting posts.** An earlier version of this note claimed two
+2.6 mm through-hole posts carried the load; the datasheet has no such thing. The
+shell ends in two flat 0.86 mm tabs. Rev 1.5 dropped them into Ø2.6 mm round
+holes — a tab rattling in a hole three times its width, with solder asked to
+bridge ~0.9 mm on each side, which is close to no mechanical anchorage at all.
+Rev 2.0 now cuts the 0.86 × 2.20 mm slots the datasheet specifies, so those
+joints are real. That materially improves this item but does not close it: the
+overhang is still 75 mm and still untested.
 
 ## Bring-up, once boards arrive
 
