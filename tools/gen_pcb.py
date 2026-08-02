@@ -11,7 +11,7 @@ diagonals rising inward, and a 13.544 mm-radius arc across the apex.
 
 It deliberately EXCLUDES the 12.40 x 15.40 mm rectangle that also appears on
 that Gerber layer. That rectangle is centred on USB1, overlaps the board edge by
-about a millimetre, and matches the AM90's plastic housing — it marks the
+about a millimetre, and matches the AM90's plastic housing, it marks the
 connector body, not board material, and leaked into the outline layer as an
 EasyEDA export artifact. Including it would produce an open, unroutable profile.
 

@@ -10,7 +10,7 @@ parts, because boards were built with them. That reasoning is weaker than it
 looks: rev 1.5 never enumerated, so nothing about it was ever really proven, and
 an audit against the manufacturers' own recommended land patterns found three
 places where rev 1.5's library is wrong. Those are corrected here, via NPTH and
-PAD_FIXES below — the rev 1.5 export is the starting point, not the authority.
+PAD_FIXES below, the rev 1.5 export is the starting point, not the authority.
 
 Coordinate frames, since three conventions collide here:
   * Altium pad coordinates are absolute, in mils, Y-up.

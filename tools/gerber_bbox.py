@@ -3,7 +3,7 @@
 
 Used to pin down rev 1.5's mechanical envelope from the fabricated Gerbers, so
 the KiCad rev 2.0 board can be checked against it. The USB-A connector and SD
-socket positions are mechanical fits — they must not drift during the migration.
+socket positions are mechanical fits, they must not drift during the migration.
 
     ./tools/gerber_bbox.py <file.gbr> [...]
 """

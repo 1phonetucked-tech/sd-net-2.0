@@ -4,7 +4,7 @@
 
 EasyEDA Pro has **no native KiCad export**. It only *imports* KiCad. The community
 converters you'll find (`easyeda2kicad.py`, Wokwi's converter, `easyeda2kicad6`) target the
-**EasyEDA Standard** JSON format — they do not handle EasyEDA **Pro** project files, and
+**EasyEDA Standard** JSON format; they do not handle EasyEDA **Pro** project files, and
 `easyeda2kicad.py` in particular is a *component* library converter, not a project converter.
 
 The route that actually works Pro → KiCad is **via Altium**:
@@ -16,17 +16,17 @@ EasyEDA Pro  ──Export→Altium Designer──►  .SchDoc + .PcbDoc  ──K
 KiCad has built-in Altium importers for both schematic and PCB. EasyEDA Pro writes Altium
 ASCII 5.0, which is the dialect the importer handles best.
 
-## Step 1 — export from EasyEDA Pro
+## Step 1, export from EasyEDA Pro
 
 In the sd - net project:
 
 1. **File → Export → Altium Designer** (also reachable as top menu **Export → Altium Designer**).
 2. Export **both** the schematic and the PCB. You get a zip containing `.SchDoc` and `.PcbDoc`.
-3. Drop the zip in `fab/v1.5-easyeda/altium-export/` and tell me — I'll take it from there.
+3. Drop the zip in `fab/v1.5-easyeda/altium-export/` and tell me, I'll take it from there.
 
 Also grab, while you're in there:
 
-- **File → Export → Netlist** (any format) — a second netlist confirms the rail split later.
+- **File → Export → Netlist** (any format), a second netlist confirms the rail split later.
 - The **BOM** with LCSC part numbers, if it has more detail than the 2026-06-19 xlsx.
 
 ## What's scriptable vs. GUI-only
@@ -37,20 +37,20 @@ Verified against the installed KiCad **10.0.5**
 - **PCB import is scriptable.** `kicad-cli pcb import --format altium` handles `.PcbDoc`
   directly, and `--report-format json --report-file …` gives a machine-readable log of
   everything the importer dropped or approximated. That report is the checklist for step 2.
-- **Schematic import is GUI-only.** `kicad-cli sch` has `erc`, `export` and `upgrade` — no
+- **Schematic import is GUI-only.** `kicad-cli sch` has `erc`, `export` and `upgrade`, no
   `import`. The `.SchDoc` has to go through **File → Import Non-KiCad Project** in the
   Schematic Editor. Expect to do that one by hand.
-- **ERC and DRC are scriptable** — `kicad-cli sch erc` and `kicad-cli pcb drc`, so the
+- **ERC and DRC are scriptable**, `kicad-cli sch erc` and `kicad-cli pcb drc`, so the
   verification gates in step 4 can run automatically on every change.
 - **`kicad-cli pcb export ipcd356`** emits an IPC-D-356 netlist. That's the clean way to do
   the rev 1.5 → 2.0 netlist diff, and it's the same class of data as the rev 1.5
   flying-probe file we already have.
-- **`kicad-cli pcb render`** produces 3D PNGs — useful for the README and the PCBWay
+- **`kicad-cli pcb render`** produces 3D PNGs, useful for the README and the PCBWay
   sponsorship pitch, both of which want a picture of a board that doesn't physically exist yet.
 - **Image Converter.app** (bundled with KiCad) is what turns
   `branding/oshwa_mark/oshw_gear_black.svg` into a placeable silkscreen footprint for step 4.
 
-## ⛔ Step 2 as planned does not work — KiCad rejects the export
+## ⛔ Step 2 as planned does not work, KiCad rejects the export
 
 Tested 2026-07-31 with the real files:
 
@@ -61,14 +61,14 @@ Error during import: Wrong file format
 ```
 
 **Cause:** KiCad's Altium importer expects the **binary** `.PcbDoc` (an OLE compound
-document, magic `D0 CF 11 E0`). EasyEDA Pro emits **Altium ASCII 5.0** — our files begin
+document, magic `D0 CF 11 E0`). EasyEDA Pro emits **Altium ASCII 5.0**, our files begin
 `|RECORD=Board|KIND=Protel_Advanced_PCB|VERSION=5.01` and
 `|HEADER=Protel for Windows - Schematic Capture Ascii File Version 5.0`. Different format,
 same extension. EasyEDA Pro has no binary export option, and converting ASCII→binary needs
 Altium Designer itself.
 
 So the Altium route is dead for a direct import. **But the ASCII is plain pipe-delimited
-text, which turns out to be better than an import would have been** — `tools/altium_netlist.py`
+text, which turns out to be better than an import would have been**, `tools/altium_netlist.py`
 reads the connectivity straight out of it. The full rev 1.5 netlist is now recovered exactly
 (see `REV1.5-BASELINE.md`), and it shows only one net is wrong.
 
@@ -78,7 +78,7 @@ sits at the pin of the rail it now serves.
 
 ## Status
 
-- ✅ **Schematic built and verified.** `hardware/sd-net.kicad_sch` — ERC clean (0 errors),
+- ✅ **Schematic built and verified.** `hardware/sd-net.kicad_sch`, ERC clean (0 errors),
   netlist verified against intent and diffed against rev 1.5 by `tools/verify_netlist.py`.
   13 placements (rev 1.5's 11, plus C7/C8 for VCARD and VDDA decoupling).
 - ✅ **Footprints built.** `hardware/sd-net.pretty/` holds `SD-006M` and `USB-AM90`, derived
@@ -89,9 +89,9 @@ sits at the pin of the rail it now serves.
 
 Connector decision (2026-07-31): **staying with the AM90 through-hole USB-A male plug.** SMD
 right-angle USB-A male plugs exist (Assmann, Molex, Würth) but none were findable on LCSC, so
-they'd be special-order hand-placed parts — costlier than the six THT joints they'd replace.
+they'd be special-order hand-placed parts, costlier than the six THT joints they'd replace.
 USB-C was considered and rejected on mechanics: a USB-C plug is 8.34 × 2.56 mm against
-USB-A's 12.0 × 4.5 mm, roughly 7–8× less resistant to the bending load of a cantilevered
+USB-A's 12.0 × 4.5 mm, roughly 7-8× less resistant to the bending load of a cantilevered
 board, and it would lose the AM90's two 2.6 mm through-hole mounting posts.
 
 ⚠️ **Open mechanical concern:** the board is 113.85 × 74.56 mm, cantilevered off a single USB
@@ -106,7 +106,7 @@ because someone remembered to cut a wire. The pin types encode the datasheet fin
 `VDD`, `VDDA` and `PMOS` are `power_out`, `5V` is the only `power_in`.
 
 Deliberately floating pins (`U1.11` GPIO, `CARD1.CD`, `CARD1.WP`) carry explicit no-connect
-markers, so rev 2.0 can tell "we decided this" from "we forgot this" — a distinction rev 1.5
+markers, so rev 2.0 can tell "we decided this" from "we forgot this", a distinction rev 1.5
 did not record.
 
 The generator is a **one-time bootstrap**. Once you start editing in KiCad, don't re-run it.
@@ -129,11 +129,11 @@ Both produce nothing but `Failed to load schematic`, with no line number:
    conversion banner. If you need to discover the current number, run `kicad-cli sch upgrade`
    on a file and read it back.
 
-## Step 2 (superseded) — import into KiCad
+## Step 2 (superseded), import into KiCad
 
 1. `File → Import Non-KiCad Project → Altium Project`, or import `.PcbDoc` / `.SchDoc`
    individually into a fresh project at `hardware/sd-net.kicad_pro`.
-2. Expect these to need hand-repair after import — this is normal, not a failed conversion:
+2. Expect these to need hand-repair after import; this is normal, not a failed conversion:
    - **Copper pours don't survive** the EasyEDA export. Re-draw and re-fill all zones.
    - **Text size/position drifts.** Silkscreen especially.
    - **Symbols/footprints land in an import-specific library.** They need re-pointing at
@@ -141,7 +141,7 @@ Both produce nothing but `Failed to load schematic`, with no line number:
    - **Net names** come across mangled (`$1N2351` style). Rename to `+5V`, `+3V3`, `VCARD`, `GND`.
 3. Run `Update PCB from Schematic` with **re-link footprints by reference designator** ticked.
 
-## Step 3 — apply the rail fix
+## Step 3, apply the rail fix
 
 Do this in the **schematic**, not the PCB. Per `../CLAUDE.md`:
 
@@ -153,11 +153,11 @@ Do this in the **schematic**, not the PCB. Per `../CLAUDE.md`:
   keep chassis and signal ground split).
 - **Verify against the GL823K datasheet typical-application circuit before routing.**
 
-## Step 4 — verify the migration didn't lose anything
+## Step 4, verify the migration didn't lose anything
 
 Once both exist I'll diff rev 1.5 against rev 2.0 mechanically:
 
-- Board outline and connector positions from the old Gerbers vs the new `.kicad_pcb` — the
+- Board outline and connector positions from the old Gerbers vs the new `.kicad_pcb`, the
   USB-A plug tongue dimensions and SD socket position are the parts that *must* not move.
 - Netlist diff: every rev 1.5 net should map to a rev 2.0 net, with exactly the intended
   three-way split showing as the difference.
@@ -167,7 +167,7 @@ Once both exist I'll diff rev 1.5 against rev 2.0 mechanically:
 
 - **Layer count.** Rev 1.5 is 4-layer. For USB 2.0 high-speed (480 Mbps) the D+/D− pair
   wants ~90 Ω differential, which 4-layer makes easy and controlled. On a board this small a
-  2-layer stackup can work and is cheaper — but given these are being handed out, keeping
+  2-layer stackup can work and is cheaper, but given these are being handed out, keeping
   4-layer for signal integrity is the safer call. Worth a quote both ways.
 - **Silkscreen.** Place `branding/oshwa_mark/oshw_gear_black.svg` at ≈13 mm wide, plus the
   OSHWA UID **US002797**, revision, and the CERN-OHL-S-2.0 notice.

@@ -10,7 +10,7 @@ construction*: the four power nodes are separate nets here because they're
 declared separate, not because someone remembered to cut a wire. See
 `docs/POWER-DESIGN.md`.
 
-Once this has run and ERC is clean, edit the schematic in KiCad — do not re-run
+Once this has run and ERC is clean, edit the schematic in KiCad, do not re-run
 this and clobber hand edits.
 
     ./tools/gen_schematic.py
@@ -95,7 +95,7 @@ def make_symbol(name, desc, ref, footprint, pins, half_w, top, bot, datasheet=""
     )
 
 
-# GL823K — SSOP-16. Pin types encode the finding in docs/POWER-DESIGN.md:
+# GL823K, SSOP-16. Pin types encode the finding in docs/POWER-DESIGN.md:
 # VDD/VDDA/PMOS are regulator OUTPUTS (power_out), 5V is the only input.
 GL823K_PINS = [
     ("10", "5V",   "power_in",       "L",  12.7),

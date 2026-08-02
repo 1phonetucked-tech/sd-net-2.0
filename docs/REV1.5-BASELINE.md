@@ -1,17 +1,17 @@
 # Rev 1.5 measured baseline
 
 Extracted from the fabricated Gerbers, BOM and pick-and-place on 2026-07-31. These are the
-numbers rev 2.0 gets checked against — anything here that changes during the KiCad migration
+numbers rev 2.0 gets checked against, anything here that changes during the KiCad migration
 changed by accident unless we decided otherwise.
 
 Regenerate with:
 
 ```
-python3 tools/gerber_bbox.py fab/v1.5-easyeda/gerber-extracted/*.G* 
+python3 tools/gerber_bbox.py fab/v1.5-easyeda/gerber-extracted/*.G*
 python3 tools/xlsx2csv.py "fab/v1.5-easyeda/BOM_sd - net 1.5_sd - net 1.5_2026-06-19.xlsx"
 ```
 
-## Bill of materials — 11 placements, 7 line items
+## Bill of materials, 11 placements, 7 line items
 
 | Ref | Part | Package | LCSC |
 |---|---|---|---|
@@ -23,7 +23,7 @@ python3 tools/xlsx2csv.py "fab/v1.5-easyeda/BOM_sd - net 1.5_sd - net 1.5_2026-0
 | U1 | **GL823K-HCY04** | **SSOP-16** (4.9 × 3.9, 0.64 pitch) | C284879 (Genesys) |
 | USB1 | **AM90 USB-A male, right-angle** | **USB-AM-TH** (through-hole) | C404965 (Shou Han) |
 
-Rev 2.0 keeps all of these and adds **C7 + C8** (100 nF 0603, LCSC C14663 — same part as
+Rev 2.0 keeps all of these and adds **C7 + C8** (100 nF 0603, LCSC C14663, same part as
 C4/C5/C6), giving VCARD a high-frequency cap and VDDA a second one. **13 placements, 7 line
 items.** Reasoning in `POWER-DESIGN.md`.
 
@@ -31,34 +31,34 @@ items.** Reasoning in `POWER-DESIGN.md`.
 and flux, and very reworkable. Good news for debugging rev 2.0 by hand before committing to a
 production run.
 
-## ⚠️ USB1 is through-hole — this affects the assembly quote
+## ⚠️ USB1 is through-hole, this affects the assembly quote
 
 `SMD: No` in the pick-and-place. Through-hole parts are **not** part of standard economic
-SMT assembly at most fabs — they're hand-soldered and billed separately per joint, and some
+SMT assembly at most fabs, they're hand-soldered and billed separately per joint, and some
 low-cost assembly tiers refuse THT outright. Six joints on USB1, so it's not expensive, but
 it must be raised explicitly when quoting, and it's a point in PCBWay's favor (they handle
 mixed THT/SMT assembly more willingly than the cheapest JLCPCB tiers).
 
 Worth asking during rev 2.0: is there an SMD right-angle USB-A male equivalent? Going
 all-SMD would make the board assembly-house-trivial and cheaper at every quantity. Not a
-blocker — just the single highest-leverage DFM change available.
+blocker, just the single highest-leverage DFM change available.
 
 ## Mechanical envelope
 
-**Overall: 113.85 × 74.56 mm**, board outline X 9.80–123.66, Y 6.25–80.81 mm.
+**Overall: 113.85 × 74.56 mm**, board outline X 9.80-123.66, Y 6.25-80.81 mm.
 
-It is not a rectangle. The outline is a shaped board — flat bottom edge, sides angling up and
+It is not a rectangle. The outline is a shaped board, flat bottom edge, sides angling up and
 inward, capped by a **13.54 mm-radius arc** centered at (68.30, 72.00), with small corner
 fillets at the bottom two corners.
 
 ⚠️ An earlier version of this note called it "symmetric about X ≈ 68.3 mm". **It is not.** The
-apex arc is centred on 68.3, and so are U1, USB1 and CARD1 — but the base is centred on 66.8.
+apex arc is centred on 68.3, and so are U1, USB1 and CARD1, but the base is centred on 66.8.
 That leaves the left side 1.95 mm longer than the right and the two base angles 2.03° apart,
 which is visible on a board this wide. Symmetric is clearly what was *intended*; it is not
-what was drawn. Rev 2.0 rebuilds the outline properly symmetric — see `gen_pcb.py`.
+what was drawn. Rev 2.0 rebuilds the outline properly symmetric, see `gen_pcb.py`.
 
-A **12.40 × 15.40 mm rectangular tab** protrudes below the bottom edge at X 61.62–74.02,
-Y 6.25–21.65 — centered on the same 68.3 mm axis as USB1.
+A **12.40 × 15.40 mm rectangular tab** protrudes below the bottom edge at X 61.62-74.02,
+Y 6.25-21.65, centered on the same 68.3 mm axis as USB1.
 
 ### Placement coordinates (mm, from pick-and-place)
 
@@ -78,17 +78,17 @@ Y 6.25–21.65 — centered on the same 68.3 mm axis as USB1.
 
 Everything functional sits on the centerline: SD socket at top, controller below it, USB plug
 at the bottom, with the 100 nF caps to the left of U1 and the 10 µF to the right. R1 and LED1
-run out to the lower left — the LED is a long way from the controller, ~50 mm of trace.
+run out to the lower left; the LED is a long way from the controller, ~50 mm of trace.
 
-**Must not move in rev 2.0:** USB1 and CARD1 positions and the outline tab — those are
+**Must not move in rev 2.0:** USB1 and CARD1 positions and the outline tab; those are
 mechanical fits. Everything else is free to re-place, and the decoupling caps *should* move:
 each pair belongs as close as possible to the pin of the rail it now serves.
 
-## Full netlist audit — only one net is wrong
+## Full netlist audit, only one net is wrong
 
 Extracted from the Altium ASCII export with `tools/altium_netlist.py`; saved at
 `fab/v1.5-easyeda/netlist_v1.5.txt`. 11 components, 13 nets. This is the fabricated design's
-actual connectivity — a third independent confirmation of the defect, after the `.tel`
+actual connectivity, a third independent confirmation of the defect, after the `.tel`
 netlist and the flying-probe data.
 
 **The defect, confirmed exactly:**
@@ -98,7 +98,7 @@ netlist and the flying-probe data.
 [ 7] $1N2347   U1.10 USB1.1                                                  <-- VBUS, no caps
 ```
 
-**Everything else checks out.** This is the good news — rev 2.0 is a surgical change, not a
+**Everything else checks out.** This is the good news; rev 2.0 is a surgical change, not a
 redesign:
 
 | Function | Net | Verdict |
@@ -118,27 +118,27 @@ redesign:
 
 All nine SD card contacts land on the right controller pins, both USB data lines are on the
 right pins, and the LED is wired anode-side through R1 with its cathode on the pin-12 open
-drain — which is the correct way round. **The entire rev 1.5 failure is net 0.**
+drain, which is the correct way round. **The entire rev 1.5 failure is net 0.**
 
 **Unconnected pads** (matches `RESUME_NOTES.md`, all non-blocking):
 `CARD1.12` `CARD1.13` (shell tabs) · `CARD1.CD` `CARD1.WP` · `U1.11` (GPIO) ·
 `USB1.MH1` `USB1.MH2` (USB shell mounting).
 
-### Why there is no card detect — it's a designed-in feature, not an omission
+### Why there is no card detect, it's a designed-in feature, not an omission
 
 The GL823K datasheet lists this in its own feature summary (§1):
 
 > Support **non-SD Card Detect pin**, non-MS Insertion/Removal pin design to save BOM cost
 > Support **non-SD Write Protection pin** design to save BOM cost
 
-The chip is explicitly built to work *without* a card-detect line — it detects cards by
+The chip is explicitly built to work *without* a card-detect line; it detects cards by
 polling the SD bus instead. That's why the socket's mechanical CD and WP contacts go
 nowhere, and it's the right design, not an oversight.
 
 **Pin 11 is not a card-detect input.** The pin table calls it "General Purpose I/O"
-(type `I, pu` — input with pull-up) and nothing in the datasheet describes a function that
-reads it as card presence. Wiring `CARD1.CD` to `U1.11` would be electrically harmless — the
-internal pull-up plus a switch to ground is a valid arrangement — but there is no documented
+(type `I, pu`, input with pull-up) and nothing in the datasheet describes a function that
+reads it as card presence. Wiring `CARD1.CD` to `U1.11` would be electrically harmless, the
+internal pull-up plus a switch to ground is a valid arrangement, but there is no documented
 mechanism by which the controller would act on it. It would be decoration.
 
 Note also that `CARD1.1` (`DAT3_CD`) is correctly used as **DAT3**. That contact doubles as
@@ -148,12 +148,12 @@ Rev 2.0 keeps CD and WP unconnected, now with explicit no-connect markers.
 
 ## Stackup
 
-4 layers — `GTL` / `G1` / `G2` / `GBL`. Copper layers span X 8.55–124.79, Y 20.88–85.19
-(top/bottom, including pads and silk-adjacent copper); inner layers X 9.96–123.48,
-Y 20.78–80.64.
+4 layers, `GTL` / `G1` / `G2` / `GBL`. Copper layers span X 8.55-124.79, Y 20.88-85.19
+(top/bottom, including pads and silk-adjacent copper); inner layers X 9.96-123.48,
+Y 20.78-80.64.
 
 Drills: PTH 0.305 mm (vias), 1.000 mm, 2.600 mm; NPTH 1.000 mm and 1.600 mm.
 
-Keep 4 layers in rev 2.0 — USB 2.0 high-speed D+/D− wants a controlled ~90 Ω differential
+Keep 4 layers in rev 2.0, USB 2.0 high-speed D+/D− wants a controlled ~90 Ω differential
 pair over a solid reference plane. On boards you're handing out, there's no reason to gamble
 on a 2-layer stackup to save a few dollars.
