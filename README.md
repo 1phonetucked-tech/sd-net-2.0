@@ -4,7 +4,9 @@ full-size USB SD card reader > USB-A plug for end user connect > 13 placements a
 
 [![OSHWA US002797](https://img.shields.io/badge/OSHWA-US002797-blue)](https://certification.oshwa.org/us002797.html)
 [![CERN-OHL-S-2.0](https://img.shields.io/badge/license-CERN--OHL--S--2.0-green)](LICENSE)
-CERN-OHL-S-2.0 > distribute a variant and its design files must be shared under the same terms
+hardware, everything in `hardware/` and `fab/` > CERN-OHL-S-2.0 > distribute a variant and its design files must be shared under the same terms
+documentation, everything in `docs/` > CC-BY-SA-4.0 > credit the source, share adaptations alike
+software, the generators in `tools/` > GPL-3.0 > see `tools/LICENSE`
 
 | | |
 |---|---|
