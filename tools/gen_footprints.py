@@ -251,7 +251,15 @@ def build(name, ref, descr, tags, silk=None):
           + (silk(pads) if silk else "")
           + "".join(pad_sexp(p) for p in pads)
           + "".join(npth_sexp(*h) for h in holes)
-          + "\t(embedded_fonts no)\n)\n")
+          + "\t(embedded_fonts no)\n"
+          # KiCad ships no 3D model that fits any of these three parts, so
+          # tools/gen_3dmodels.py builds them. Authored in KiCad's 0.1 inch
+          # VRML convention, hence scale 1.
+          + f'\t(model "${{KIPRJMOD}}/sd-net.3dshapes/{name}.wrl"\n'
+          + '\t\t(offset (xyz 0 0 0))\n'
+          + '\t\t(scale (xyz 1 1 1))\n'
+          + '\t\t(rotate (xyz 0 0 0))\n'
+          + '\t)\n)\n')
     os.makedirs(PRETTY, exist_ok=True)
     open(os.path.join(PRETTY, name + ".kicad_mod"), "w").write(fp)
     print(f"{name}: {len(pads)} pads + {len(holes)} NPTH, rev1.5 rotation {rot:g}, "

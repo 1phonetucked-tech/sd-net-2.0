@@ -107,4 +107,9 @@
 		(layers "F&B.Cu" "*.Mask")
 	)
 	(embedded_fonts no)
+	(model "${KIPRJMOD}/sd-net.3dshapes/SD-006M.wrl"
+		(offset (xyz 0 0 0))
+		(scale (xyz 1 1 1))
+		(rotate (xyz 0 0 0))
+	)
 )
