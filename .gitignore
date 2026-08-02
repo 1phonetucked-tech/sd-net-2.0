@@ -22,3 +22,6 @@ fab/v1.5-easyeda/gerber-extracted/
 
 # Fab working copy (regenerate from the zip)
 fab/v2.0-kicad/gerber/
+
+# Local working notes for Claude Code — not published
+CLAUDE.md
