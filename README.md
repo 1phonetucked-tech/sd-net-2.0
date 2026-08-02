@@ -50,7 +50,7 @@ review before ordering
 |---|---|
 | `hardware/` | KiCad 10 project: schematic, PCB, footprints, 3D models |
 | `fab/v2.0-kicad/` | Gerbers, drill, BOM, pick-and-place, assembly drawing |
-| `docs/` | Power design, land patterns, status, controller datasheet |
+| `docs/` | Power design, land patterns, status |
 | `tools/` | Generators and checks |
 | `branding/` | OSHW mark and the KiCad colour theme used for the schematic PDF |
 

@@ -3,6 +3,10 @@
 The GL823K takes a single external supply. Everything else on the board is
 generated inside the chip.
 
+Section and table numbers below refer to the GL823K datasheet rev 1.05. That
+document is Genesys Logic's and is not redistributed here: request it through
+the vendor, or through LCSC part C284879.
+
 ## Supply topology
 
 Four nets, each with its own decoupling, and no external connection between
