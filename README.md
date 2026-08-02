@@ -4,6 +4,7 @@ full-size USB SD card reader > USB-A plug for end user connect > 13 placements a
 
 [![OSHWA US002797](https://img.shields.io/badge/OSHWA-US002797-blue)](https://certification.oshwa.org/us002797.html)
 [![CERN-OHL-S-2.0](https://img.shields.io/badge/license-CERN--OHL--S--2.0-green)](LICENSE)
+CERN-OHL-S-2.0 > distribute a variant and its design files must be shared under the same terms
 
 | | |
 |---|---|
@@ -70,8 +71,5 @@ fab. To regenerate:
 **do not run "Tools → Update Footprints from Library" in the PCB editor. KiCad
 stores pad angles absolutely & "U1" sits at 270 degrees > updating from the library strips those angles and shorts the part
 *also explained in docs/LAND-PATTERNS.md***
-
-## licence
-CERN-OHL-S-2.0 > distribute a variant and its design files must be shared under the same terms.
 
 created by (1)PhoneTucked.
