@@ -73,4 +73,9 @@ fab. To regenerate:
 stores pad angles absolutely & "U1" sits at 270 degrees > updating from the library strips those angles and shorts the part
 *also explained in docs/LAND-PATTERNS.md***
 
+## thanks
+
+[PCBWay](https://www.pcbway.com/) is supporting the rev 2.0 run > five boards,
+fabricated and assembled.
+
 created by (1)PhoneTucked.
