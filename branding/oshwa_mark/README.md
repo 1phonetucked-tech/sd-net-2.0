@@ -1,6 +1,6 @@
 # Open-source-hardware logo — silkscreen artwork
 
-Prepared for **sd - net** (OSHWA UID US002797, but the plain gear needs no number).
+Prepared for **sd - net** (the plain gear needs no number).
 
 Black (single silkscreen color) version of the classic open-source-hardware gear,
 recolored from your `oshw-logo.svg` (OSHW teal `#0099B0` → pure black).

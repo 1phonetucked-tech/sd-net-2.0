@@ -42,7 +42,7 @@ BOM_LABELS = "Designator,Value,Footprint,MPN,Manufacturer,LCSC Part #,Quantity"
 
 README = """# sd - net 2.0, fabrication package
 
-open-source USB SD card reader. **OSHWA UID US002797**, CERN-OHL-S-2.0.
+open-source USB SD card reader. CERN-OHL-S-2.0.
 Repository: https://github.com/1phonetucked-tech/sd-net-2.0
 
 | | |
@@ -115,8 +115,7 @@ largest remaining risk in this design, and a photo catches it for free.
 ## About the project
 
 Boards are **given away, not sold**, this is an open-hardware project under
-CERN-OHL-S-2.0 with OSHWA certification UID **US002797**. Happy to credit
-PCBWay wherever the project is published.
+CERN-OHL-S-2.0. Happy to credit PCBWay wherever the project is published.
 """
 
 
