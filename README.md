@@ -21,10 +21,10 @@ boards are exclusively given away > not sold.
 
 **supply**  
 1 external rail. GL823K's only rated input is 5 V from VBUS (multimeter tested). VDD and VDDA are outputs of an on-chip band-gap regulator and carry decoupling only > never an external feed. card power is a separate switched net driven from the controller's current-limited output, with its bulk capacitance at the socket so card inrush never reaches the USB PHY rail. **four nets > eight capacitors > no external regulator**  
-review [`docs/POWER-DESIGN.md`](docs/POWER-DESIGN.md)
+review `docs/POWER-DESIGN.md`
 
 **land patterns**  
-KiCad ships no footprint matching any of the three parts on this board > SD-006M (SD slot) > AM90 (USB) > Everlight 12-215SYGC/S530-E2/TR8 (LED). i opted out of pulling them from easyeda2kicad and generated them from the manufacturers' recommended land patterns instead > dimension by dimension > 3D models the same way. every value is recorded in [`docs/LAND-PATTERNS.md`](docs/LAND-PATTERNS.md) > the USB plug's shell tabs sit in correctly sized plated slots rather than oversized round holes > those tabs are the only thing anchoring a board that cantilevers roughly 75 mm out of a host port
+KiCad ships no footprint matching any of the three parts on this board > SD-006M (SD slot) > AM90 (USB) > Everlight 12-215SYGC/S530-E2/TR8 (LED). i opted out of pulling them from easyeda2kicad and generated them from the manufacturers' recommended land patterns instead > dimension by dimension > 3D models the same way. every value is recorded in `docs/LAND-PATTERNS.md` > the USB plug's shell tabs sit in correctly sized plated slots rather than oversized round holes > those tabs are the only thing anchoring a board that cantilevers roughly 75 mm out of a host port
 
 **outline**  
 isosceles triangle > symmetric about the axis the apex arc and all three connectors sit on > both sides 70.175 mm at 48.007 degrees, with the diagonals constructed as true tangents to the corner fillets
@@ -42,7 +42,7 @@ design is DRC clean.
 netlist is checked against intent > supply topology is confirmed on hardware at 3.38 V
 
 **rev 2.0 has not been fabricated (yet)**  
-[`docs/STATUS.md`](docs/STATUS.md) lists what is verified > what is not > and the checks to run on first articles.  
+`docs/STATUS.md` lists what is verified > what is not > and the checks to run on first articles.  
 review before ordering
 
 ## layout
@@ -72,7 +72,7 @@ fab. To regenerate:
 
 **do not run `Tools → Update Footprints from Library` in the PCB editor. KiCad
 stores pad angles absolutely & `U1` sits at 270 degrees > updating from the library strips those angles and shorts the part**  
-*also explained in [`docs/LAND-PATTERNS.md`](docs/LAND-PATTERNS.md)*
+*also explained in `docs/LAND-PATTERNS.md`*
 
 ## thanks
 
