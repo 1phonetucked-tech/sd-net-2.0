@@ -119,6 +119,51 @@ reference; the low-battery icon was lit. Every number above was taken after fitt
 9 V and re-checking against a known cell and the charger. If you repeat this, sanity-check
 the meter on a fresh AA (1.5–1.6 V) before trusting anything it says.
 
+### Observed failure mode, 2026-08-02 — it never reached the bus
+
+Same bench session, same rev 1.5 board. This is what the prototypes actually do, which
+until now was nowhere in this repo:
+
+| Condition | Observed |
+|---|---|
+| 5 V charger, empty slot | pin-8/9/13 node **stable at 3.38 V** |
+| 5 V charger, card inserted | node **sags and fluctuates** |
+| Mac, empty slot | **does not enumerate** |
+| Mac, card inserted | **does not enumerate** |
+| While failing | node cycles **3.3 V → 2.5 V → back up, or lower** |
+
+**Two corrections to the earlier account.**
+
+*It is not a card-power failure.* The board never appears on the bus at all, with or without
+a card. The short does defeat card power, but that is not what stopped the prototypes.
+
+*3.3 → 2.5 → 3.3 is not a sag, it is a brownout/reset loop.* Power applies, the chip starts,
+the load steps, the rail collapses, the chip resets, repeat. A host never sees a device
+because the device never stays alive long enough to enumerate.
+
+The tell is the difference between the two supplies. On a **charger** with an empty slot the
+node is stable — nothing is asking the chip to do anything. On a **Mac** it oscillates,
+because the host actually attempts enumeration: the PHY switches on, D+ pulls up, high-speed
+signalling starts, and the current draw steps hard. That step is what the rail cannot take.
+
+Both known defects feed it:
+
+- **VBUS has no decoupling at all**, so the current step has to arrive down a USB cable with
+  zero local reservoir at pin 10.
+- **The short puts all six caps, ~30 µF, on the regulator's output.** Charging that through
+  an internal regulator with current limiting, from an unsupported input, is a textbook
+  hiccup oscillator.
+
+⚠️ This is *consistent with* the two known defects, which is not the same as proving there is
+no third fault. What it does establish is that the two things rev 2.0 changes are the two
+things that would break this loop: VBUS gains 10 µF + 100 nF, and the regulator's output load
+drops from ~30 µF to ~10.3 µF on a node that no longer carries the card or the PHY.
+
+**Still worth one probe** if a rev 1.5 board is to hand: measure VBUS (`USB1` pin 1 to pin 4)
+while it is looping on a Mac. If VBUS cycles too, the undecoupled input is the driver. If
+VBUS holds 5 V while the 3.3 V node cycles, the cause is downstream — the regulator current
+limiting into 30 µF, or a fault latch on the shorted PMOS pin.
+
 ### Second-source search — what was actually checked (2026-07-31)
 
 No verified second-source schematic was obtained. Every accessible route was blocked:
