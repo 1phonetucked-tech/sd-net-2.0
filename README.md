@@ -2,7 +2,9 @@
 
 full-size USB SD card reader > USB-A plug for end user connect > 13 placements across 7 line items in between.
 
-[![CERN-OHL-S-2.0](https://img.shields.io/badge/license-CERN--OHL--S--2.0-green)](LICENSE)  
+[![CERN-OHL-S-2.0](https://img.shields.io/badge/license-CERN--OHL--S--2.0-green)](LICENSE) [![OSHWA US002843](https://img.shields.io/badge/OSHWA-US002843-a5c626)](https://certification.oshwa.org/us002843.html)  
+rev 2.0 is certified open source hardware by the [Open Source Hardware Association](https://certification.oshwa.org/us002843.html) > UID US002843 > certified 2026-08-07
+
 hardware, everything in `hardware/` and `fab/` > CERN-OHL-S-2.0 > distribute a variant and its design files must be shared under the same terms  
 documentation, everything in `docs/` > CC-BY-SA-4.0 > credit the source, share adaptations alike  
 software, the generators in `tools/` > GPL-3.0 > see `tools/LICENSE`
@@ -17,14 +19,17 @@ software, the generators in `tools/` > GPL-3.0 > see `tools/LICENSE`
 
 boards are exclusively given away > not sold.
 
+**shoutout to [PCBWay](https://www.pcbway.com/) who is sponsoring the rev 2.0
+run > five boards, fabricated and assembled**
+
 ## specifications
 
 **supply**  
 1 external rail. GL823K's only rated input is 5 V from VBUS (multimeter tested). VDD and VDDA are outputs of an on-chip band-gap regulator and carry decoupling only > never an external feed. card power is a separate switched net driven from the controller's current-limited output, with its bulk capacitance at the socket so card inrush never reaches the USB PHY rail. **four nets > eight capacitors > no external regulator**  
-review `docs/POWER-DESIGN.md`
+review [`docs/POWER-DESIGN.md`](docs/POWER-DESIGN.md)
 
 **land patterns**  
-KiCad ships no footprint matching any of the three parts on this board > SD-006M (SD slot) > AM90 (USB) > Everlight 12-215SYGC/S530-E2/TR8 (LED). i opted out of pulling them from easyeda2kicad and generated them from the manufacturers' recommended land patterns instead > dimension by dimension > 3D models the same way. every value is recorded in `docs/LAND-PATTERNS.md` > the USB plug's shell tabs sit in correctly sized plated slots rather than oversized round holes > those tabs are the only thing anchoring a board that cantilevers roughly 75 mm out of a host port
+KiCad ships no footprint matching any of the three parts on this board > SD-006M (SD slot) > AM90 (USB) > Everlight 12-215SYGC/S530-E2/TR8 (LED). i opted out of pulling them from easyeda2kicad and generated them from the manufacturers' recommended land patterns instead > dimension by dimension > 3D models the same way. every value is recorded in [`docs/LAND-PATTERNS.md`](docs/LAND-PATTERNS.md) > the USB plug's shell tabs sit in correctly sized plated slots rather than oversized round holes > those tabs are the only thing anchoring a board that cantilevers roughly 75 mm out of a host port
 
 **outline**  
 isosceles triangle > symmetric about the axis the apex arc and all three connectors sit on > both sides 70.175 mm at 48.007 degrees, with the diagonals constructed as true tangents to the corner fillets
@@ -42,7 +47,7 @@ design is DRC clean.
 netlist is checked against intent > supply topology is confirmed on hardware at 3.38 V
 
 **rev 2.0 has not been fabricated (yet)**  
-`docs/STATUS.md` lists what is verified > what is not > and the checks to run on first articles.  
+[`docs/STATUS.md`](docs/STATUS.md) lists what is verified > what is not > and the checks to run on first articles.  
 review before ordering
 
 ## layout
@@ -72,11 +77,6 @@ fab. To regenerate:
 
 **do not run `Tools → Update Footprints from Library` in the PCB editor. KiCad
 stores pad angles absolutely & `U1` sits at 270 degrees > updating from the library strips those angles and shorts the part**  
-*also explained in `docs/LAND-PATTERNS.md`*
-
-## thanks
-
-[PCBWay](https://www.pcbway.com/) is supporting the rev 2.0 run > five boards,
-fabricated and assembled.
+*also explained in [`docs/LAND-PATTERNS.md`](docs/LAND-PATTERNS.md)*
 
 created by (1)PhoneTucked.

@@ -43,6 +43,15 @@ Everything else is SMT.
 not round holes. They take the plug's shell tabs and carry the mechanical load,
 so please do not substitute round drills.
 
+They are in the drill file, not in the Gerber layers. `sd-net-PTH.drl` cuts them
+as Excellon G85 routed slots on tool `T2C0.900`, each routing 1.350 mm along Y
+from a centre of Y -95.855, at X 94.155 (MH1) and X 82.445 (MH2). The copper is
+on all four layers: obround aperture 1.70 × 3.05 mm flashed at the same two
+centres, mask opened to match, both on GND. They are the two oval pads either
+side of the four round USB pins. `sd-net-PTH-drl_map.pdf` marks them as well. If
+your CAM prefers M15/M16 routed slots or a separate rout layer, say so and we
+will send a new drill file.
+
 **4, Four holes must NOT be plated.** `sd-net-NPTH.drl` holds 2 × Ø1.00 mm
 (USB plug locating pegs) and 2 × Ø1.60 mm (SD socket pegs). Plating them will
 prevent both connectors from seating.
