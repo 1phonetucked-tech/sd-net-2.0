@@ -73,9 +73,15 @@ Both come from `REV1.5-BASELINE.md` and both move the price:
    joint, and the cheapest JLCPCB tiers may decline it. Six joints, so it's small money, but
    ask up front. PCBWay handles mixed THT/SMT more willingly, which is a point in their
    favor here.
-2. **The board is a shaped outline, 113.85 × 74.56 mm**, with an arc top, angled sides and a
-   protruding tab — not a rectangle. Some fabs charge for non-rectangular routing or CNC
-   profiling beyond a simple outline. Confirm it's included.
+2. **The board is a shaped outline, 116.12 × 64.98 mm** — an isosceles triangle with a
+   13.54 mm-radius arc across the apex and 4.85 mm fillets on the bottom two corners, not a
+   rectangle. Some fabs charge for non-rectangular routing or CNC profiling beyond a simple
+   outline. Confirm it's included.
+
+   Those are the **rev 2.0** numbers, measured from `Edge.Cuts` including the arc bulges.
+   `REV1.5-BASELINE.md` quotes 113.85 × 74.56 for rev 1.5: that is a vertex-only width, and
+   the height includes the 12.40 × 15.40 mm tab which is the AM90's plastic housing leaking
+   into the outline layer, not board material. Rev 2.0 has no such tab.
 
 ## Sources
 

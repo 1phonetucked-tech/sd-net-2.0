@@ -47,9 +47,15 @@ blocker — just the single highest-leverage DFM change available.
 
 **Overall: 113.85 × 74.56 mm**, board outline X 9.80–123.66, Y 6.25–80.81 mm.
 
-It is not a rectangle. The outline is a **symmetric shaped board** — flat bottom edge, sides
-angling up and inward, capped by a **13.54 mm-radius arc** centered at (68.30, 72.00),
-with small corner fillets at the bottom two corners. Symmetric about **X ≈ 68.3 mm**.
+It is not a rectangle. The outline is a shaped board — flat bottom edge, sides angling up and
+inward, capped by a **13.54 mm-radius arc** centered at (68.30, 72.00), with small corner
+fillets at the bottom two corners.
+
+⚠️ An earlier version of this note called it "symmetric about X ≈ 68.3 mm". **It is not.** The
+apex arc is centred on 68.3, and so are U1, USB1 and CARD1 — but the base is centred on 66.8.
+That leaves the left side 1.95 mm longer than the right and the two base angles 2.03° apart,
+which is visible on a board this wide. Symmetric is clearly what was *intended*; it is not
+what was drawn. Rev 2.0 rebuilds the outline properly symmetric — see `gen_pcb.py`.
 
 A **12.40 × 15.40 mm rectangular tab** protrudes below the bottom edge at X 61.62–74.02,
 Y 6.25–21.65 — centered on the same 68.3 mm axis as USB1.

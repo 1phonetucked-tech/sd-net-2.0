@@ -105,9 +105,14 @@ hardware.
 
 ## Open item 5 — mechanical: 114 mm cantilevered off a USB plug
 
-The board is **113.85 × 74.56 mm** hanging off a single USB-A plug — roughly
+The board is **116.12 × 64.98 mm** hanging off a single USB-A plug — roughly
 75 mm of overhang once inserted. A knock puts real leverage on both the AM90's
 solder joints and the host's USB port.
+
+(Measured from rev 2.0's `Edge.Cuts`, arc bulges included. Two earlier figures
+in this file were both wrong: 60.29 was the vertex extent, missing the apex
+arc, and 74.56 is rev 1.5's height including the connector-housing tab that
+rev 2.0 does not have.)
 
 This is inherited from rev 1.5, not introduced by any rev 2.0 change, and it has
 never been examined. It matters more than usual here because these boards are

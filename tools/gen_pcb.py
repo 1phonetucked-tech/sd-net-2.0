@@ -49,17 +49,30 @@ def uid():
 
 # --- outline, in the Gerber frame -------------------------------------------
 # Endpoints snapped where the Gerber's aperture rounding left sub-0.3 mm gaps.
-P1 = (13.181, 20.612)    # base, left end
-P2 = (9.801, 29.067)     # top of the left corner fillet
-P3 = (58.012, 80.810)    # apex arc, left end
-P4 = (78.586, 80.810)    # apex arc, right end
-P5 = (123.655, 28.864)   # top of the right corner fillet
-P6 = (120.451, 20.519)   # base, right end
+#
+# Rev 1.5's outline was meant to be symmetric about X = 68.3 -- the axis the apex
+# arc and U1, USB1 and CARD1 all sit on -- and wasn't. The apex was centred but
+# the base was not, which left the left side 1.95 mm longer than the right and
+# the two base angles 2.03 degrees apart, on a board 107 mm wide. Visible.
+#
+# Rebuilt symmetric, using the average of each mismatched pair so neither side
+# simply won: fillet-centre half-offset 53.635, base levelled at Y 20.5655,
+# fillet radius 4.8465, apex half-span 10.287. The two diagonals are then
+# constructed as true tangents from the apex endpoints to the fillet circles,
+# which also removes a 2.4 degree kink where rev 1.5's left diagonal met the
+# apex arc. Both sides now 70.175 mm at 48.007 degrees.
+AX = 68.3                # axis of symmetry; everything below is mirrored on it
+P1 = (14.665, 20.5655)   # base, left end   (below the left fillet centre)
+P2 = (11.063, 28.6545)   # left diagonal, tangent to the left fillet
+P3 = (58.013, 80.810)    # apex arc, left end
+P4 = (78.587, 80.810)    # apex arc, right end
+P5 = (125.537, 28.6545)  # right diagonal, tangent to the right fillet
+P6 = (121.935, 20.5655)  # base, right end
 
 ARCS = [
-    (P1, P2, (13.034, 25.456), "cw"),     # bottom-left fillet,  r 4.846
-    (P4, P3, (68.299, 72.000), "ccw"),    # apex,                r 13.544
-    (P6, P5, (120.304, 25.363), "ccw"),   # bottom-right fillet, r 4.846
+    (P1, P2, (14.665, 25.412), "cw"),     # bottom-left fillet,  r 4.8465
+    (P4, P3, (68.300, 72.000), "ccw"),    # apex,                r 13.544
+    (P6, P5, (121.935, 25.412), "ccw"),   # bottom-right fillet, r 4.8465
 ]
 LINES = [(P2, P3), (P4, P5), (P1, P6)]    # diagonals + base
 
