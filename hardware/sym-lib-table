@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "sd-net")(type "KiCad")(uri "${KIPRJMOD}/sd-net.kicad_sym")(options "")(descr "sd - net project symbols"))
+)

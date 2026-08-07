@@ -1,0 +1,32 @@
+#VRML V2.0 utf8
+# SOFNG SD-006M full-size SD socket, LCSC C125615.
+#         Envelope from the datasheet: 29.0 L x 28.5 W x 2.9 H, positioned from
+#         the page 2 land pattern. Push-push mechanism and shell detail omitted.
+
+Transform {
+  translation 0.000000 -1.604724 0.570866
+  children [
+    Shape {
+      appearance Appearance { material Material {
+        diffuseColor 0.72 0.73 0.75
+        specularColor 0.55 0.55 0.57
+        shininess 0.55
+      } }
+      geometry Box { size 11.220472 11.417323 1.141732 }
+    }
+  ]
+}
+
+Transform {
+  translation 0.000000 -7.077165 0.590551
+  children [
+    Shape {
+      appearance Appearance { material Material {
+        diffuseColor 0.08 0.08 0.09
+        specularColor 0.02 0.02 0.02
+        shininess 0.05
+      } }
+      geometry Box { size 9.527559 0.472441 0.748031 }
+    }
+  ]
+}

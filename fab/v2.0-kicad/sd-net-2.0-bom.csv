@@ -1,0 +1,8 @@
+"Designator","Value","Footprint","MPN","Manufacturer","LCSC Part #","Quantity"
+"C1-C3","10uF","Capacitor_SMD:C_0805_2012Metric","CL21A106KAYNNNE","Samsung","C15850","3"
+"C4-C8","100nF","Capacitor_SMD:C_0603_1608Metric","CC0603KRX7R9BB104","Yageo","C14663","5"
+"CARD1","SD-006M","sd-net:SD-006M","SD-006M","Sofng","C125615","1"
+"LED1","12-215SYGC","sd-net:LED-12-215SYGC","12-215SYGC/S530-E2/TR8","Everlight","C131283","1"
+"R1","220","Resistor_SMD:R_0603_1608Metric","0603WAF2200T5E","Uni-Royal","C22962","1"
+"U1","GL823K-HCY04","Package_SO:SSOP-16_3.9x4.9mm_P0.635mm","GL823K-HCY04","Genesys Logic","C284879","1"
+"USB1","AM90","sd-net:USB-AM90","AM90","Shou Han","C404965","1"

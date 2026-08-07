@@ -1,0 +1,17 @@
+#VRML V2.0 utf8
+# Everlight 12-215SYGC/S530-E2/TR8 yellow-green chip LED, LCSC C131283.
+#         0804 body, 2.0 x 1.0 x 0.8 mm. Lens curvature omitted.
+
+Transform {
+  translation 0.000000 -0.000000 0.157480
+  children [
+    Shape {
+      appearance Appearance { material Material {
+        diffuseColor 0.55 0.82 0.32
+        specularColor 0.35 0.45 0.3
+        shininess 0.75
+      } }
+      geometry Box { size 0.787402 0.393701 0.314961 }
+    }
+  ]
+}
