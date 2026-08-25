@@ -46,7 +46,7 @@ design is DRC clean.
 0 violations and 0 unconnected  
 netlist is checked against intent > supply topology is confirmed on hardware at 3.38 V
 
-**rev 2.0 has not been fabricated (yet)**  
+**rev 2.0 is currently in production**  
 [`docs/STATUS.md`](docs/STATUS.md) lists what is verified > what is not > and the checks to run on first articles.  
 review before ordering
 
